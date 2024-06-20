@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  postgres-offerua:
+    container_name: postgres-offerua
+    image: postgres:16
+    environment:
+      POSTGRES_DB: offerua
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /data/postgres
+    volumes:
+      - ./postgres-offerua:/data/postgres
+    ports:
+      - "5433:5432"
+    restart: unless-stopped

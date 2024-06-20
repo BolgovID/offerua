@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: offerua
+  datasource:
+    url: jdbc:postgresql://localhost:5433/offerua
+    username: postgres
+    password: postgres
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+logging:
+  level:
+    org.springframework.data.r2dbc: DEBUG
