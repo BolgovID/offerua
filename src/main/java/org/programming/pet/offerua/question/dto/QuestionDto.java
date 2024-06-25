@@ -5,7 +5,7 @@ import java.util.UUID;
 public record QuestionDto(
         UUID id,
         String question,
-        String topic,
-        Double probability
+        Double probability,
+        String subTopic
 ) {
 }

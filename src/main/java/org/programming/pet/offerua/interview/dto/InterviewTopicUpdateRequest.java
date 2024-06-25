@@ -1,4 +1,6 @@
 package org.programming.pet.offerua.interview.dto;
 
-public record InterviewTopicUpdateRequest(String topicName, String displayName) {
+import java.util.UUID;
+
+public record InterviewTopicUpdateRequest(String topicName, String displayName, UUID subtopicId) {
 }

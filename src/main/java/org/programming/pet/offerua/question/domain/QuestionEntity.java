@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.UuidGenerator;
 import org.programming.pet.offerua.common.domain.Auditable;
-import org.programming.pet.offerua.answer.domain.AnswerEntity;
+import org.programming.pet.offerua.interview.domain.InterviewSubtopicEntity;
 import org.programming.pet.offerua.interview.domain.InterviewTopicEntity;
 
 import java.util.List;
@@ -32,4 +32,7 @@ public class QuestionEntity extends Auditable<String> {
     @ManyToOne
     @JoinColumn(name = "interview_topic_id")
     InterviewTopicEntity interviewTopic;
+    @ManyToOne
+    @JoinColumn(name = "subtopic_id")
+    InterviewSubtopicEntity subTopic;
 }

@@ -1,9 +1,6 @@
-package org.programming.pet.offerua.answer.domain;
+package org.programming.pet.offerua.question.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.UuidGenerator;
@@ -25,4 +22,7 @@ public class AnswerEntity extends Auditable<String> {
     @Column(name = "answer", nullable = false)
     String answer;
     Integer rating;
+    @ManyToOne
+    @JoinColumn(name = "question_id")
+    QuestionEntity question;
 }
