@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.common.config;
+package org.programming.pet.offerua.common.domain.config;
 
 import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.AuditorAware;

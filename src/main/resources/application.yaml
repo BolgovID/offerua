@@ -1,4 +1,7 @@
 spring:
+  redis:
+    host: localhost
+    port: 6379
   application:
     name: offerua
   datasource:
@@ -15,3 +18,11 @@ spring:
 logging:
   level:
     org.springframework.data.r2dbc: DEBUG
+app:
+  security:
+    jwt:
+      secret: 357638792F423F4428472B4B6250655368566D597133743677397A2443264629
+      issuer: http://localhost:8080
+      expiresIn: 60m
+    refresh:
+      expiresIn: 7d

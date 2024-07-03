@@ -13,3 +13,9 @@ services:
     ports:
       - "5433:5432"
     restart: unless-stopped
+
+  redis-token-store:
+    image: redis
+    ports:
+        - "6379:6379"
+    restart: unless-stopped

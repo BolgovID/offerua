@@ -3,7 +3,7 @@ package org.programming.pet.offerua.question.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.dto.PaginationRequest;
-import org.programming.pet.offerua.question.dto.AnswerDto;
+import org.programming.pet.offerua.question.dto.AnswerByQuestionDto;
 import org.programming.pet.offerua.question.dto.QuestionDto;
 import org.programming.pet.offerua.question.dto.QuestionFilterRequest;
 import org.programming.pet.offerua.question.service.AnswerService;
@@ -28,8 +28,9 @@ public class QuestionController {
     public Page<QuestionDto> getAllQuestions(@PathVariable UUID id, QuestionFilterRequest questionFilterRequest) {
         return questionService.findAllQuestionRelatedToLanguage(id, questionFilterRequest);
     }
+
     @GetMapping("/question/{id}/answers")
-    public Page<AnswerDto> getAllAnswers(@PathVariable UUID id, PaginationRequest paginationRequest) {
+    public AnswerByQuestionDto getAllAnswers(@PathVariable UUID id, PaginationRequest paginationRequest) {
         return answerService.findAllAnswersByQuestionId(id, paginationRequest);
     }
 }

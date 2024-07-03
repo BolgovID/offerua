@@ -6,5 +6,6 @@ import org.programming.pet.offerua.question.dto.AnswerDto;
 
 @Mapper(componentModel = "spring")
 public interface AnswerMapper {
+
     AnswerDto toDto(AnswerEntity answerEntity);
 }

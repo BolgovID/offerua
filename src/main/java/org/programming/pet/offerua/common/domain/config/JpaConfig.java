@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.common.config;
+package org.programming.pet.offerua.common.domain.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

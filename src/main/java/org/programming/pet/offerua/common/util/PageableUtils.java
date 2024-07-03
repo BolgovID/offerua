@@ -8,15 +8,21 @@ import org.springframework.data.domain.Sort;
 
 @UtilityClass
 public class PageableUtils {
-    public static final String DESCENDING = "DESC";
-    public static final String ID_FIELD = "id";
+    private static final String DESCENDING = "DESC";
+    private static final String ID_FIELD = "id";
+    private static final int DEFAULT_PAGE_NUMBER = 0;
+    private static final int DEFAULT_PAGE_SIZE = 15;
 
     public Pageable getPageable(PaginationRequest request) {
-        String sortBy = request.getSortBy();
-        String direction = request.getDirection();
+        var sortBy = request.getSortBy();
+        var direction = request.getDirection();
+        var pageNo = request.getPageNo();
+        var pageSize = request.getPageSize();
         Sort.Direction sortDirection;
-        if (request.getPageNo() == null || request.getPageSize() == null) {
-            return null;
+
+        if (pageNo == null || pageSize == null) {
+            pageNo = DEFAULT_PAGE_NUMBER;
+            pageSize = DEFAULT_PAGE_SIZE;
         }
         if (request.getSortBy() == null || request.getSortBy().isBlank()) {
             sortBy = ID_FIELD;
@@ -25,6 +31,6 @@ public class PageableUtils {
             direction = DESCENDING;
         }
         sortDirection = Sort.Direction.fromString(direction);
-        return PageRequest.of(request.getPageNo(), request.getPageSize(), sortDirection, sortBy);
+        return PageRequest.of(pageNo, pageSize, sortDirection, sortBy);
     }
 }
