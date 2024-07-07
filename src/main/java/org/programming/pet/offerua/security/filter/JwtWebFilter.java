@@ -52,7 +52,7 @@ public class JwtWebFilter extends OncePerRequestFilter {
         if (Objects.nonNull(username) && !containInContext()) {
             var userDetails = userDetailsServiceImpl.loadUserByUsername(username);
 
-            if (isValidToken(userDetails, token)) {
+            if (jwtService.validateToken(token, userDetails)) {
                 authenticateUser(userDetails, request);
             }
         }
@@ -61,10 +61,6 @@ public class JwtWebFilter extends OncePerRequestFilter {
     private void authenticateUser(UserDetails userDetails, HttpServletRequest request) {
         var authentication = authenticationTokenFactory.create(userDetails, request);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    private boolean isValidToken(UserDetails userDetails, String token) {
-        return jwtService.validateToken(token, userDetails);
     }
 
     private boolean containInContext() {
