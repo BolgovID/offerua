@@ -33,9 +33,8 @@ public class JwtWebFilter extends OncePerRequestFilter {
             @Nonnull FilterChain filterChain
     ) {
         AuthHeaderUtils.extractTokenFromRequest(request)
-                .ifPresentOrElse(
-                        token -> processToken(token, request),
-                        () -> proceedFilterChain(request, response, filterChain)
+                .ifPresent(
+                        token -> processToken(token, request)
                 );
         proceedFilterChain(request, response, filterChain);
     }

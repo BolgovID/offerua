@@ -20,13 +20,13 @@ import java.time.Instant;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @FieldDefaults(level = AccessLevel.PROTECTED)
-public abstract class Auditable<U> implements Serializable {
+public abstract class Auditable<T> implements Serializable {
     @CreatedBy
-    U createdBy;
+    T createdBy;
     @CreatedDate
     Instant createdDate;
     @LastModifiedBy
-    U lastModifiedBy;
+    T lastModifiedBy;
     @LastModifiedDate
     Instant lastModifiedDate;
 }

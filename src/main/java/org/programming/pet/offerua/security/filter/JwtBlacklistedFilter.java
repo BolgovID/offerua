@@ -30,7 +30,6 @@ public class JwtBlacklistedFilter extends OncePerRequestFilter {
                         token -> handleToken(token, request, response, filterChain),
                         () -> proceedFilterChain(request, response, filterChain)
                 );
-        proceedFilterChain(request, response, filterChain);
     }
 
     private void proceedFilterChain(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {

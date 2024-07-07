@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.users.controller;
+package org.programming.pet.offerua.security.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.security.dto.AuthRequest;
 import org.programming.pet.offerua.security.dto.JwtResponseDto;
 import org.programming.pet.offerua.security.dto.RefreshTokenRequest;
-import org.programming.pet.offerua.users.service.AuthService;
+import org.programming.pet.offerua.security.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

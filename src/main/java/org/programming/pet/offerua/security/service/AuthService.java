@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.users.service;
+package org.programming.pet.offerua.security.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +9,6 @@ import org.programming.pet.offerua.security.dto.RefreshToken;
 import org.programming.pet.offerua.security.exception.RefreshTokenNotExistException;
 import org.programming.pet.offerua.security.model.UserInfo;
 import org.programming.pet.offerua.security.repositories.TokenBlacklist;
-import org.programming.pet.offerua.security.service.JwtService;
-import org.programming.pet.offerua.security.service.RefreshTokenService;
 import org.programming.pet.offerua.security.service.factory.AuthenticationTokenFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

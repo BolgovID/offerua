@@ -13,7 +13,7 @@ import java.util.Optional;
 public class RefreshTokenDao implements RefreshTokenRepository {
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private static final String HASH_KEY = "refresh_token:";
+    private static final String HASH_KEY = "token:refresh:";
 
     @Override
     public RefreshToken save(RefreshToken token) {

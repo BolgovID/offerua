@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 public class TokenBlackListDao implements TokenBlacklist {
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private static final String HASH_KEY = "blacklisted_token:";
+    private static final String HASH_KEY = "token:jwt:blacklist:";
 
     @Override
     public void addToBlacklist(String token) {
