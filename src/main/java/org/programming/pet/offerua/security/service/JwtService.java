@@ -23,14 +23,6 @@ public class JwtService {
     private final JwtProperties jwtProperties;
     private final JwtFactory jwtFactory;
 
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
-
     public boolean validateToken(String token, UserDetails userDetails) {
         var username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
@@ -39,6 +31,14 @@ public class JwtService {
     public String generateToken(String username) {
         var claims = new HashMap<String, Object>();
         return jwtFactory.createToken(claims, username, getSignKey());
+    }
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

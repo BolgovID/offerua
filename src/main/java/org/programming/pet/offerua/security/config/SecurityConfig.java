@@ -1,7 +1,7 @@
 package org.programming.pet.offerua.security.config;
 
 import lombok.RequiredArgsConstructor;
-import org.programming.pet.offerua.security.filter.JwtWebFilter;
+import org.programming.pet.offerua.security.filter.JwtAuthFilter;
 import org.programming.pet.offerua.security.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtWebFilter jwtWebFilter;
+    private final JwtAuthFilter jwtAuthFilter;
     private final UserDetailsServiceImpl userDetailsService;
 
     private static final String[] WHITE_LIST_URL = {
@@ -44,7 +44,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authenticationProvider(authenticatedProvider())
-                .addFilterBefore(jwtWebFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

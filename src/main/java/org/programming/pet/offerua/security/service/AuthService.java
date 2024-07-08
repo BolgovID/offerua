@@ -3,8 +3,9 @@ package org.programming.pet.offerua.security.service;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.programming.pet.offerua.common.util.AuthHeaderUtils;
+import org.programming.pet.offerua.common.util.RequestUtils;
 import org.programming.pet.offerua.security.dto.JwtResponseDto;
+import org.programming.pet.offerua.security.dto.LogoutRequest;
 import org.programming.pet.offerua.security.dto.RefreshToken;
 import org.programming.pet.offerua.security.exception.RefreshTokenNotExistException;
 import org.programming.pet.offerua.security.model.UserInfo;
@@ -60,8 +61,10 @@ public class AuthService {
                 .build();
     }
 
-    public void logout(HttpServletRequest request) {
-        AuthHeaderUtils.extractTokenFromRequest(request)
+    public void logout(HttpServletRequest request, LogoutRequest logoutRequest) {
+        RequestUtils.extractTokenFromHeader(request)
                 .ifPresent(tokenBlacklist::addToBlacklist);
+
+        refreshTokenService.deleteToken(logoutRequest.refreshToken());
     }
 }

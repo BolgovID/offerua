@@ -8,6 +8,7 @@ import org.programming.pet.offerua.common.domain.Auditable;
 import org.programming.pet.offerua.interview.domain.InterviewSubtopicEntity;
 import org.programming.pet.offerua.interview.domain.InterviewTopicEntity;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,7 +19,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionEntity extends Auditable<String> {
+public class QuestionEntity extends Auditable<String> implements Serializable {
     @Id
     @UuidGenerator
     UUID id;

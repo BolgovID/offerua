@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 public interface TokenBlacklist {
     void addToBlacklist(String token);
     boolean isBlacklisted(String token);
+    boolean isNotBlacklisted(String token);
 }

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.security.dto.AuthRequest;
 import org.programming.pet.offerua.security.dto.JwtResponseDto;
+import org.programming.pet.offerua.security.dto.LogoutRequest;
 import org.programming.pet.offerua.security.dto.RefreshTokenRequest;
 import org.programming.pet.offerua.security.service.AuthService;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +34,9 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
+    public ResponseEntity<String> logout(HttpServletRequest servletRequest, @RequestBody LogoutRequest logoutRequest) {
         log.info("Received POST /logout");
-        authService.logout(request);
+        authService.logout(servletRequest, logoutRequest);
         return ResponseEntity.ok("Logged out successfully");
     }
 }
