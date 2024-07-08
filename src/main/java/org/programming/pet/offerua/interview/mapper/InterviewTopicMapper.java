@@ -3,9 +3,9 @@ package org.programming.pet.offerua.interview.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import org.programming.pet.offerua.interview.domain.InterviewTopicEntity;
-import org.programming.pet.offerua.interview.dto.InterviewTopicUpdateRequest;
-import org.programming.pet.offerua.interview.dto.InterviewTopicDto;
+import org.programming.pet.offerua.interview.persistence.InterviewTopicEntity;
+import org.programming.pet.offerua.interview.controller.InterviewTopicUpdateRequest;
+import org.programming.pet.offerua.interview.InterviewTopicDto;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface InterviewTopicMapper {

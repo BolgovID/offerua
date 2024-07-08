@@ -1,7 +1,7 @@
 package org.programming.pet.offerua.security.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.programming.pet.offerua.common.exception.ErrorResponse;
+import org.programming.pet.offerua.common.dto.ErrorResponse;
 import org.programming.pet.offerua.security.exception.RefreshTokenExpiredException;
 import org.programming.pet.offerua.security.exception.RefreshTokenNotExistException;
 import org.programming.pet.offerua.security.exception.WebFilterException;

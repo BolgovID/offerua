@@ -19,7 +19,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity implements Serializable {
-
     @Id
     @UuidGenerator
     UUID id;
