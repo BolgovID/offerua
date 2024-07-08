@@ -1,6 +1,7 @@
 package org.programming.pet.offerua.security.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.security.dto.AuthRequest;
@@ -22,15 +23,15 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public JwtResponseDto authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    public JwtResponseDto authenticateAndGetToken(@RequestBody AuthRequest authRequest, HttpServletResponse servletResponse) {
         log.info("Received POST /login for {}", authRequest.username());
-        return authService.authenticate(authRequest.username(), authRequest.password());
+        return authService.authenticate(authRequest.username(), authRequest.password(), servletResponse);
     }
 
     @PostMapping("/refresh-token")
-    public JwtResponseDto refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+    public JwtResponseDto refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest, HttpServletResponse servletResponse) {
         log.info("Received POST /refresh-token with {}", refreshTokenRequest);
-        return authService.refreshToken(refreshTokenRequest.token());
+        return authService.refreshToken(refreshTokenRequest.token(), servletResponse);
     }
 
     @PostMapping("/logout")

@@ -1,6 +1,7 @@
 package org.programming.pet.offerua.security.service;
 
 import lombok.RequiredArgsConstructor;
+import org.programming.pet.offerua.common.util.TimeUtils;
 import org.programming.pet.offerua.security.config.properties.JwtProperties;
 import org.programming.pet.offerua.security.config.properties.RefreshTokenProperties;
 import org.programming.pet.offerua.security.dto.RefreshToken;
@@ -11,7 +12,6 @@ import org.programming.pet.offerua.users.repository.UserRepository;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -34,7 +34,7 @@ public class RefreshTokenService {
     }
 
     public RefreshToken verifyExpiration(RefreshToken token) {
-        if (token.expiryDate().isBefore(Instant.now())) {
+        if (token.expiryDate().isBefore(TimeUtils.currentTime())) {
             refreshTokenRepository.deleteToken(token.token());
             throw new RefreshTokenExpiredException(token.token());
         }

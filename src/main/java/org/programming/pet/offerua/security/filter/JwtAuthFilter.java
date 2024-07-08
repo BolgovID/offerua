@@ -35,7 +35,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @Nonnull HttpServletResponse response,
             @Nonnull FilterChain filterChain
     ) {
-        RequestUtils.extractTokenFromHeader(request)
+        RequestUtils.extractTokenFromCookies(request)
                 .ifPresent(token -> processToken(token, request));
         proceedFilterChain(request, response, filterChain);
     }

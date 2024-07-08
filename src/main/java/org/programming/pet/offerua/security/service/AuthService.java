@@ -1,6 +1,7 @@
 package org.programming.pet.offerua.security.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.util.RequestUtils;
@@ -11,6 +12,8 @@ import org.programming.pet.offerua.security.exception.RefreshTokenNotExistExcept
 import org.programming.pet.offerua.security.model.UserInfo;
 import org.programming.pet.offerua.security.repositories.TokenBlacklist;
 import org.programming.pet.offerua.security.service.factory.AuthenticationTokenFactory;
+import org.programming.pet.offerua.security.service.factory.CookieResponseFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -24,8 +27,9 @@ public class AuthService {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final TokenBlacklist tokenBlacklist;
+    private final CookieResponseFactory cookieFactory;
 
-    public JwtResponseDto authenticate(String username, String password) {
+    public JwtResponseDto authenticate(String username, String password, HttpServletResponse servletResponse) {
         var authToken = authenticationTokenFactory.create(username, password);
         var authentication = authenticationManager.authenticate(authToken);
 
@@ -34,16 +38,19 @@ public class AuthService {
         }
 
         var refreshToken = refreshTokenService.createRefreshToken(username);
-        var jwtToken = jwtService.generateToken(username);
+        var accessToken = jwtService.generateToken(username);
         log.info("User {} authenticated successfully", username);
 
+        var cookie = cookieFactory.createAuthCookie(accessToken);
+        servletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
         return JwtResponseDto.builder()
-                .accessToken(jwtToken)
+                .accessToken(accessToken)
                 .refreshToken(refreshToken.token())
                 .build();
     }
 
-    public JwtResponseDto refreshToken(String refreshToken) {
+    public JwtResponseDto refreshToken(String refreshToken, HttpServletResponse servletResponse) {
         var username = refreshTokenService.findByToken(refreshToken)
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::user)
@@ -55,6 +62,9 @@ public class AuthService {
         var accessToken = jwtService.generateToken(username);
         var newRefreshToken = refreshTokenService.createRefreshToken(username);
 
+        var cookie = cookieFactory.createAuthCookie(accessToken);
+        servletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
         return JwtResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(newRefreshToken.token())
@@ -64,7 +74,6 @@ public class AuthService {
     public void logout(HttpServletRequest request, LogoutRequest logoutRequest) {
         RequestUtils.extractTokenFromHeader(request)
                 .ifPresent(tokenBlacklist::addToBlacklist);
-
         refreshTokenService.deleteToken(logoutRequest.refreshToken());
     }
 }

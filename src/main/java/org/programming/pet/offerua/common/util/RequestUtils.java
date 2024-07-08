@@ -16,7 +16,7 @@ public class RequestUtils {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String EMPTY_STRING = "";
 
-    public Optional<String> getAccessTokenFromCookies(HttpServletRequest request) {
+    public Optional<String> extractTokenFromCookies(HttpServletRequest request) {
         return extractCookieValue(request, ACCESS_TOKEN);
     }
 

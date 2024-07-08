@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.programming.pet.offerua.common.util.TimeUtils;
 import org.programming.pet.offerua.security.config.properties.JwtProperties;
 import org.programming.pet.offerua.security.service.factory.JwtFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -56,7 +57,7 @@ public class JwtService {
 
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token)
-                .before(new Date());
+                .before(TimeUtils.currentDate());
     }
 
     private Key getSignKey() {
