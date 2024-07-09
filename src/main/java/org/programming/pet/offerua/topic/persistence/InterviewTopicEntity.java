@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.interview.persistence;
+package org.programming.pet.offerua.topic.persistence;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

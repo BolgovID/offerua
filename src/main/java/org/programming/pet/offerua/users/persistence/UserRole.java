@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.users.domain;
+package org.programming.pet.offerua.users.persistence;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

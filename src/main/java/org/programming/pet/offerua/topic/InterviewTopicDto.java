@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.interview;
+package org.programming.pet.offerua.topic;
 
 import java.io.Serializable;
 import java.util.UUID;

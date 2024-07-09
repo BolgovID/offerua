@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.interview.persistence;
+package org.programming.pet.offerua.topic.persistence;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

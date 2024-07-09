@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.users.domain;
+package org.programming.pet.offerua.users.persistence;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -25,6 +25,11 @@ public class UserEntity implements Serializable {
     String username;
     @JsonIgnore
     String password;
+    @Column(name = "first_name")
+    String firstName;
+    String surname;
+    @Column(unique = true)
+    String email;
     @ManyToMany(fetch = FetchType.EAGER)
     Set<UserRole> roles = new HashSet<>();
 }

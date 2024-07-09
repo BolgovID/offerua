@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.interview;
+package org.programming.pet.offerua.topic;
 
 import java.util.List;
 import java.util.UUID;

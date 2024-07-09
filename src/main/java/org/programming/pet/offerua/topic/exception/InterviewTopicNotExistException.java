@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.interview.exception;
+package org.programming.pet.offerua.topic.exception;
 
 import java.util.UUID;
 

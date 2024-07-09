@@ -28,6 +28,8 @@ app:
       expiresIn: 60m
     refresh:
       expiresIn: 7d
+    confirmation-link:
+      expiresIn: 1d
 logging:
   level:
     org.springframework.data.r2dbc: DEBUG
@@ -57,3 +59,6 @@ management:
     web:
       exposure:
         include: "*"
+  tracing:
+    sampling:
+      probability: 1.0

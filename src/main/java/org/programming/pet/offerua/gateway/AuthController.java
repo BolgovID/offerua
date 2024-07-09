@@ -4,23 +4,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.programming.pet.offerua.security.SecurityExternalApi;
-import org.programming.pet.offerua.security.AuthRequest;
-import org.programming.pet.offerua.security.JwtResponseDto;
-import org.programming.pet.offerua.security.LogoutRequest;
-import org.programming.pet.offerua.security.RefreshTokenRequest;
+import org.programming.pet.offerua.security.*;
+import org.programming.pet.offerua.users.UserDto;
+import org.programming.pet.offerua.users.UserRegisterDto;
+import org.programming.pet.offerua.users.UsersExternalApi;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class AuthController {
     private final SecurityExternalApi securityExternalApi;
+    private final UsersExternalApi usersExternalApi;
 
     @PostMapping("/login")
     public JwtResponseDto authenticateAndGetToken(@RequestBody AuthRequest authRequest, HttpServletResponse servletResponse) {
@@ -39,5 +37,19 @@ public class AuthController {
         log.info("Received POST /logout");
         securityExternalApi.logout(servletRequest, logoutRequest);
         return ResponseEntity.ok("Logged out successfully");
+    }
+
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.OK)
+    public void requestToRegister(@RequestBody UserRegisterDto userDto) {
+        log.info("Received POST /register");
+        usersExternalApi.requestToRegister(userDto);
+    }
+
+    @PostMapping("/confirm-registration")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto confirmRegistration(@RequestParam String data) {
+        log.info("Received POST /confirm-registration");
+        return usersExternalApi.confirmRegistration(data);
     }
 }

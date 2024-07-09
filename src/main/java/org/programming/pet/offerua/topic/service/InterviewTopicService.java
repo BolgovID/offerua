@@ -1,13 +1,13 @@
-package org.programming.pet.offerua.interview.service;
+package org.programming.pet.offerua.topic.service;
 
 import lombok.RequiredArgsConstructor;
-import org.programming.pet.offerua.interview.InterviewTopicDto;
-import org.programming.pet.offerua.interview.InterviewTopicExternalApi;
-import org.programming.pet.offerua.interview.InterviewTopicUpdateRequest;
-import org.programming.pet.offerua.interview.exception.DBFieldsUniqueException;
-import org.programming.pet.offerua.interview.exception.InterviewTopicNotExistException;
-import org.programming.pet.offerua.interview.mapper.InterviewTopicMapper;
-import org.programming.pet.offerua.interview.persistence.InterviewTopicRepository;
+import org.programming.pet.offerua.topic.InterviewTopicDto;
+import org.programming.pet.offerua.topic.InterviewTopicExternalApi;
+import org.programming.pet.offerua.topic.InterviewTopicUpdateRequest;
+import org.programming.pet.offerua.topic.exception.DBFieldsUniqueException;
+import org.programming.pet.offerua.topic.exception.InterviewTopicNotExistException;
+import org.programming.pet.offerua.topic.mapper.InterviewTopicMapper;
+import org.programming.pet.offerua.topic.persistence.InterviewTopicRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

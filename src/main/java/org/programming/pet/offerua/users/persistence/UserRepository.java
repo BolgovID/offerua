@@ -1,6 +1,5 @@
-package org.programming.pet.offerua.users.repository;
+package org.programming.pet.offerua.users.persistence;
 
-import org.programming.pet.offerua.users.domain.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,5 +8,7 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
-    Optional<UserEntity> getByUsername(String username);
+    Optional<UserEntity> findByUsername(String username);
+
+    Optional<UserEntity> findByEmail(String email);
 }

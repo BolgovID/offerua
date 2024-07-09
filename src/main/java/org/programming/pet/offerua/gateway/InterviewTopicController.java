@@ -2,9 +2,9 @@ package org.programming.pet.offerua.gateway;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.programming.pet.offerua.interview.InterviewTopicDto;
-import org.programming.pet.offerua.interview.InterviewTopicExternalApi;
-import org.programming.pet.offerua.interview.InterviewTopicUpdateRequest;
+import org.programming.pet.offerua.topic.InterviewTopicDto;
+import org.programming.pet.offerua.topic.InterviewTopicExternalApi;
+import org.programming.pet.offerua.topic.InterviewTopicUpdateRequest;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;

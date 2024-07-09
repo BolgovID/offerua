@@ -1,9 +1,9 @@
-package org.programming.pet.offerua.interview.exception.handler;
+package org.programming.pet.offerua.topic.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.dto.ErrorResponse;
-import org.programming.pet.offerua.interview.exception.DBFieldsUniqueException;
-import org.programming.pet.offerua.interview.exception.InterviewTopicNotExistException;
+import org.programming.pet.offerua.topic.exception.DBFieldsUniqueException;
+import org.programming.pet.offerua.topic.exception.InterviewTopicNotExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
