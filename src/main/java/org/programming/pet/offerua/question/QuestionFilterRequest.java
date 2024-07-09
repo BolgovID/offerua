@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.question.controller;
+package org.programming.pet.offerua.question;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

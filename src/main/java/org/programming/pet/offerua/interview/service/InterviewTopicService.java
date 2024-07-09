@@ -3,8 +3,7 @@ package org.programming.pet.offerua.interview.service;
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.interview.InterviewTopicDto;
 import org.programming.pet.offerua.interview.InterviewTopicExternalApi;
-import org.programming.pet.offerua.interview.InterviewTopicInternalApi;
-import org.programming.pet.offerua.interview.controller.InterviewTopicUpdateRequest;
+import org.programming.pet.offerua.interview.InterviewTopicUpdateRequest;
 import org.programming.pet.offerua.interview.exception.DBFieldsUniqueException;
 import org.programming.pet.offerua.interview.exception.InterviewTopicNotExistException;
 import org.programming.pet.offerua.interview.mapper.InterviewTopicMapper;
@@ -16,7 +15,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class InterviewTopicService implements InterviewTopicInternalApi, InterviewTopicExternalApi {
+public class InterviewTopicService implements InterviewTopicExternalApi {
     private final InterviewTopicRepository interviewTopicRepository;
     private final InterviewTopicMapper interviewTopicMapper;
 

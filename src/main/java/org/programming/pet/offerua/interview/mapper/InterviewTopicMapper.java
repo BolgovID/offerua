@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.programming.pet.offerua.interview.persistence.InterviewTopicEntity;
-import org.programming.pet.offerua.interview.controller.InterviewTopicUpdateRequest;
+import org.programming.pet.offerua.interview.InterviewTopicUpdateRequest;
 import org.programming.pet.offerua.interview.InterviewTopicDto;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)

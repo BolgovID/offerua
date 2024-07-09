@@ -1,7 +1,7 @@
 package org.programming.pet.offerua.security.service.factory;
 
 import org.programming.pet.offerua.common.util.TimeUtils;
-import org.programming.pet.offerua.security.dto.RefreshToken;
+import org.programming.pet.offerua.security.persistance.RefreshToken;
 import org.programming.pet.offerua.security.model.UserInfo;
 import org.programming.pet.offerua.users.UserDto;
 import org.springframework.stereotype.Component;

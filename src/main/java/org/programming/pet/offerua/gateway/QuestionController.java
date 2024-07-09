@@ -1,9 +1,10 @@
-package org.programming.pet.offerua.question.controller;
+package org.programming.pet.offerua.gateway;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.question.QuestionsExternalApi;
 import org.programming.pet.offerua.question.QuestionDto;
+import org.programming.pet.offerua.question.QuestionFilterRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

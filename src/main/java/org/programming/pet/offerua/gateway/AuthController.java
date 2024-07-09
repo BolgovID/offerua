@@ -1,14 +1,14 @@
-package org.programming.pet.offerua.security.controller;
+package org.programming.pet.offerua.gateway;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.programming.pet.offerua.security.dto.AuthRequest;
-import org.programming.pet.offerua.security.dto.JwtResponseDto;
-import org.programming.pet.offerua.security.dto.LogoutRequest;
-import org.programming.pet.offerua.security.dto.RefreshTokenRequest;
-import org.programming.pet.offerua.security.service.AuthService;
+import org.programming.pet.offerua.security.SecurityExternalApi;
+import org.programming.pet.offerua.security.AuthRequest;
+import org.programming.pet.offerua.security.JwtResponseDto;
+import org.programming.pet.offerua.security.LogoutRequest;
+import org.programming.pet.offerua.security.RefreshTokenRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,24 +20,24 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequestMapping("/api")
 public class AuthController {
-    private final AuthService authService;
+    private final SecurityExternalApi securityExternalApi;
 
     @PostMapping("/login")
     public JwtResponseDto authenticateAndGetToken(@RequestBody AuthRequest authRequest, HttpServletResponse servletResponse) {
         log.info("Received POST /login for {}", authRequest.username());
-        return authService.authenticate(authRequest.username(), authRequest.password(), servletResponse);
+        return securityExternalApi.authenticate(authRequest.username(), authRequest.password(), servletResponse);
     }
 
     @PostMapping("/refresh-token")
     public JwtResponseDto refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest, HttpServletResponse servletResponse) {
         log.info("Received POST /refresh-token with {}", refreshTokenRequest);
-        return authService.refreshToken(refreshTokenRequest.token(), servletResponse);
+        return securityExternalApi.refreshToken(refreshTokenRequest.token(), servletResponse);
     }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest servletRequest, @RequestBody LogoutRequest logoutRequest) {
         log.info("Received POST /logout");
-        authService.logout(servletRequest, logoutRequest);
+        securityExternalApi.logout(servletRequest, logoutRequest);
         return ResponseEntity.ok("Logged out successfully");
     }
 }

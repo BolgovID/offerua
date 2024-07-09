@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.common.util.RequestUtils;
 import org.programming.pet.offerua.security.exception.WebFilterException;
-import org.programming.pet.offerua.security.repositories.TokenBlacklist;
+import org.programming.pet.offerua.security.persistance.TokenBlacklist;
 import org.programming.pet.offerua.security.service.JwtService;
 import org.programming.pet.offerua.security.service.UserDetailsServiceImpl;
 import org.programming.pet.offerua.security.service.factory.AuthenticationTokenFactory;

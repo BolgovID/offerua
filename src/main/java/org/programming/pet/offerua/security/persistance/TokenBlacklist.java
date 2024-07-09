@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.security.repositories;
+package org.programming.pet.offerua.security.persistance;
 
 import org.springframework.stereotype.Repository;
 

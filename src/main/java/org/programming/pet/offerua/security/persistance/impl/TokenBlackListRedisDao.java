@@ -1,8 +1,8 @@
-package org.programming.pet.offerua.security.repositories.impl;
+package org.programming.pet.offerua.security.persistance.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.security.config.properties.JwtProperties;
-import org.programming.pet.offerua.security.repositories.TokenBlacklist;
+import org.programming.pet.offerua.security.persistance.TokenBlacklist;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;

@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.interview.controller;
+package org.programming.pet.offerua.interview;
 
 import java.util.UUID;
 

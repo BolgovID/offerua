@@ -1,7 +1,5 @@
 package org.programming.pet.offerua.interview;
 
-import org.programming.pet.offerua.interview.controller.InterviewTopicUpdateRequest;
-
 import java.util.List;
 import java.util.UUID;
 

@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.UuidGenerator;
 import org.programming.pet.offerua.common.domain.Auditable;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
@@ -18,7 +19,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
-public class InterviewTopicEntity extends Auditable<String> {
+public class InterviewTopicEntity extends Auditable<String> implements Serializable {
     @Id
     @UuidGenerator
     UUID id;

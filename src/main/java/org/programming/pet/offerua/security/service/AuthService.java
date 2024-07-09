@@ -5,12 +5,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.util.RequestUtils;
-import org.programming.pet.offerua.security.dto.JwtResponseDto;
-import org.programming.pet.offerua.security.dto.LogoutRequest;
-import org.programming.pet.offerua.security.dto.RefreshToken;
+import org.programming.pet.offerua.security.SecurityExternalApi;
+import org.programming.pet.offerua.security.JwtResponseDto;
+import org.programming.pet.offerua.security.LogoutRequest;
+import org.programming.pet.offerua.security.persistance.RefreshToken;
 import org.programming.pet.offerua.security.exception.RefreshTokenNotExistException;
 import org.programming.pet.offerua.security.model.UserInfo;
-import org.programming.pet.offerua.security.repositories.TokenBlacklist;
+import org.programming.pet.offerua.security.persistance.TokenBlacklist;
 import org.programming.pet.offerua.security.service.factory.AuthenticationTokenFactory;
 import org.programming.pet.offerua.security.service.factory.CookieResponseFactory;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AuthService {
+public class AuthService implements SecurityExternalApi {
     private final AuthenticationManager authenticationManager;
     private final AuthenticationTokenFactory authenticationTokenFactory;
     private final JwtService jwtService;
@@ -29,6 +30,7 @@ public class AuthService {
     private final TokenBlacklist tokenBlacklist;
     private final CookieResponseFactory cookieFactory;
 
+    @Override
     public JwtResponseDto authenticate(String username, String password, HttpServletResponse servletResponse) {
         var authToken = authenticationTokenFactory.create(username, password);
         var authentication = authenticationManager.authenticate(authToken);
@@ -50,6 +52,7 @@ public class AuthService {
                 .build();
     }
 
+    @Override
     public JwtResponseDto refreshToken(String refreshToken, HttpServletResponse servletResponse) {
         var username = refreshTokenService.findByToken(refreshToken)
                 .map(refreshTokenService::verifyExpiration)
@@ -71,6 +74,7 @@ public class AuthService {
                 .build();
     }
 
+    @Override
     public void logout(HttpServletRequest request, LogoutRequest logoutRequest) {
         RequestUtils.extractTokenFromHeader(request)
                 .ifPresent(tokenBlacklist::addToBlacklist);

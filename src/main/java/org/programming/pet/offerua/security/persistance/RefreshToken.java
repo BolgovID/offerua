@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.security.dto;
+package org.programming.pet.offerua.security.persistance;
 
 import org.programming.pet.offerua.security.model.UserInfo;
 import org.springframework.data.redis.core.RedisHash;

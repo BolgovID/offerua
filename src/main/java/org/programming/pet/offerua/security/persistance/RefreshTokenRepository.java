@@ -1,6 +1,5 @@
-package org.programming.pet.offerua.security.repositories;
+package org.programming.pet.offerua.security.persistance;
 
-import org.programming.pet.offerua.security.dto.RefreshToken;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

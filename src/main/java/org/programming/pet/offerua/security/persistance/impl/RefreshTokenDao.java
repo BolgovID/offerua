@@ -1,9 +1,9 @@
-package org.programming.pet.offerua.security.repositories.impl;
+package org.programming.pet.offerua.security.persistance.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.security.config.properties.RefreshTokenProperties;
-import org.programming.pet.offerua.security.dto.RefreshToken;
-import org.programming.pet.offerua.security.repositories.RefreshTokenRepository;
+import org.programming.pet.offerua.security.persistance.RefreshToken;
+import org.programming.pet.offerua.security.persistance.RefreshTokenRepository;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
