@@ -5,6 +5,7 @@ import org.programming.pet.offerua.common.dto.ErrorResponse;
 import org.programming.pet.offerua.users.exception.EmailExistRegisterException;
 import org.programming.pet.offerua.users.exception.LinkEncodingException;
 import org.programming.pet.offerua.users.exception.LinkExpiredException;
+import org.programming.pet.offerua.users.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -38,6 +39,16 @@ public class UsersErrorHandler {
     public ResponseEntity<ErrorResponse> handleLinkExpiredException(LinkExpiredException ex) {
         log.warn(ex.getMessage());
         var responseStatus = HttpStatus.BAD_REQUEST;
+        var errorResponse = new ErrorResponse(responseStatus.value(), ex.getLocalizedMessage());
+        return ResponseEntity
+                .status(responseStatus)
+                .body(errorResponse);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+        log.warn(ex.getMessage());
+        var responseStatus = HttpStatus.NOT_FOUND;
         var errorResponse = new ErrorResponse(responseStatus.value(), ex.getLocalizedMessage());
         return ResponseEntity
                 .status(responseStatus)

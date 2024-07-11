@@ -8,10 +8,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.common.util.RequestUtils;
 import org.programming.pet.offerua.security.exception.WebFilterException;
-import org.programming.pet.offerua.security.persistance.TokenBlacklist;
 import org.programming.pet.offerua.security.service.JwtService;
 import org.programming.pet.offerua.security.service.UserDetailsServiceImpl;
 import org.programming.pet.offerua.security.service.factory.AuthenticationTokenFactory;
+import org.programming.pet.offerua.vault.VaultInternalApi;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +27,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final AuthenticationTokenFactory authenticationTokenFactory;
-    private final TokenBlacklist tokenBlacklist;
+    private final VaultInternalApi vaultInternalApi;
 
     @Override
     protected void doFilterInternal(
@@ -42,7 +42,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private void processToken(String token, HttpServletRequest request) {
         Optional.ofNullable(token)
-                .filter(tokenBlacklist::isNotBlacklisted)
+                .filter(vaultInternalApi::isJwtNotBlacklisted)
                 .map(jwtService::extractUsername)
                 .filter(username -> isNotAuthenticated())
                 .map(userDetailsServiceImpl::loadUserByUsername)

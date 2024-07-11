@@ -14,16 +14,17 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserDetailsFactory userDetailsFactory;
-    private final UsersInternalApi usersInternalApi;
+    private final UsersInternalApi usersApiClient;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("Entering in loadUserByUsername Method...");
-        var user = usersInternalApi.getUserByUsername(username);
-        if (user.isEmpty()) {
-            log.error("Username not found: {}", username);
-            throw new UsernameNotFoundException("could not found user..!!");
-        }
-        return userDetailsFactory.create(user.get());
+        return usersApiClient.getUserAuthInfoByUsername(username)
+                .map(userDetailsFactory::create)
+                .orElseThrow(() -> {
+                            log.warn("Username not found: {}", username);
+                            return new UsernameNotFoundException("could not found userInfo..!!");
+                        }
+                );
     }
 }

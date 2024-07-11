@@ -6,7 +6,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.common.util.TimeUtils;
-import org.programming.pet.offerua.security.config.properties.JwtProperties;
+import org.programming.pet.offerua.common.config.properties.JwtProperties;
 import org.programming.pet.offerua.security.service.factory.JwtFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.security.core.userdetails.UserDetails;

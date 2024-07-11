@@ -4,7 +4,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.common.util.TimeUtils;
-import org.programming.pet.offerua.security.config.properties.JwtProperties;
+import org.programming.pet.offerua.common.config.properties.JwtProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 

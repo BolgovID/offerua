@@ -1,8 +1,6 @@
 package org.programming.pet.offerua.users.persistence;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.UuidGenerator;
@@ -21,5 +19,6 @@ public class UserRole implements Serializable {
     @Id
     @UuidGenerator
     UUID id;
-    String name;
+    @Enumerated(EnumType.STRING)
+    UserRoleName name;
 }

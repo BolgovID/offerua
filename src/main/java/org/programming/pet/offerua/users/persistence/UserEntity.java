@@ -30,6 +30,9 @@ public class UserEntity implements Serializable {
     String surname;
     @Column(unique = true)
     String email;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_status")
+    UserStatus userStatus = UserStatus.NOT_CONFIRMED;
     @ManyToMany(fetch = FetchType.EAGER)
     Set<UserRole> roles = new HashSet<>();
 }
