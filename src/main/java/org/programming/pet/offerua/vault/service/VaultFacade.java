@@ -3,9 +3,8 @@ package org.programming.pet.offerua.vault.service;
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.vault.VaultExternalApi;
 import org.programming.pet.offerua.vault.VaultInternalApi;
-import org.programming.pet.offerua.vault.exception.RefreshTokenNotExistException;
-import org.programming.pet.offerua.vault.exception.ResetTokenNotExistException;
-import org.programming.pet.offerua.vault.exception.VerificationTokenNotExistException;
+import org.programming.pet.offerua.vault.exception.TokenNotExistException;
+import org.programming.pet.offerua.vault.exception.VaultErrorCodes;
 import org.programming.pet.offerua.vault.persistence.RefreshToken;
 import org.programming.pet.offerua.vault.persistence.ResetToken;
 import org.programming.pet.offerua.vault.persistence.VerificationToken;
@@ -26,6 +25,18 @@ public class VaultFacade implements VaultInternalApi, VaultExternalApi {
     }
 
     @Override
+    public String generateRefreshToken(String username) {
+        return refreshTokenService.createToken(username)
+                .token();
+    }
+
+    @Override
+    public String generateResetToken(String email) {
+        return resetTokenService.createToken(email)
+                .token();
+    }
+
+    @Override
     public String popUsernameByVerificationToken(String token) {
         var usernameOpt = verificationTokenService.findByToken(token)
                 .map(verificationTokenService::verifyExpiration)
@@ -33,8 +44,7 @@ public class VaultFacade implements VaultInternalApi, VaultExternalApi {
         usernameOpt
                 .ifPresent(verificationTokenService::deleteToken);
         return usernameOpt
-                .orElseThrow(() -> new VerificationTokenNotExistException(token));
-
+                .orElseThrow(() -> new TokenNotExistException(VaultErrorCodes.VERIFICATION_TOKEN_NOT_EXIST, token));
     }
 
     @Override
@@ -45,13 +55,27 @@ public class VaultFacade implements VaultInternalApi, VaultExternalApi {
         usernameOpt
                 .ifPresent(refreshTokenService::deleteToken);
         return usernameOpt
-                .orElseThrow(() -> new RefreshTokenNotExistException(token));
+                .orElseThrow(() -> new TokenNotExistException(VaultErrorCodes.REFRESH_TOKEN_NOT_EXIST, token));
     }
 
     @Override
-    public String generateRefreshToken(String username) {
-        return refreshTokenService.createToken(username)
-                .token();
+    public String popUserEmailByResetToken(String token) {
+        var emailOpt = resetTokenService.findByToken(token)
+                .map(resetTokenService::verifyExpiration)
+                .map(ResetToken::email);
+
+        emailOpt.ifPresent(resetTokenService::deleteToken);
+
+        return emailOpt
+                .orElseThrow(() -> new TokenNotExistException(VaultErrorCodes.RESET_TOKEN_NOT_EXIST, token));
+    }
+
+    @Override
+    public String validateResetToken(String token) {
+        return resetTokenService.findByToken(token)
+                .map(resetTokenService::verifyExpiration)
+                .map(ResetToken::token)
+                .orElseThrow(() -> new TokenNotExistException(VaultErrorCodes.RESET_TOKEN_NOT_EXIST, token));
     }
 
     @Override
@@ -67,31 +91,5 @@ public class VaultFacade implements VaultInternalApi, VaultExternalApi {
     @Override
     public boolean isJwtNotBlacklisted(String token) {
         return jwtBlackListService.isNotBlacklisted(token);
-    }
-
-    @Override
-    public String generateResetToken(String email) {
-        return resetTokenService.createToken(email)
-                .token();
-    }
-
-    @Override
-    public String popUserEmailByResetToken(String token) {
-        var emailOpt = resetTokenService.findByToken(token)
-                .map(resetTokenService::verifyExpiration)
-                .map(ResetToken::email);
-
-        emailOpt.ifPresent(resetTokenService::deleteToken);
-
-        return emailOpt
-                .orElseThrow(()-> new ResetTokenNotExistException(token));
-    }
-
-    @Override
-    public String validateResetToken(String token) {
-        return resetTokenService.findByToken(token)
-                .map(resetTokenService::verifyExpiration)
-                .map(ResetToken::token)
-                .orElseThrow(() -> new ResetTokenNotExistException(token));
     }
 }

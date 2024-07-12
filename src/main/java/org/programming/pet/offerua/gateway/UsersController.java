@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.users.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,7 +16,7 @@ public class UsersController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.OK)
-    public void requestToRegister(@RequestHeader("origin") String origin, @RequestBody UserRegisterForm userDto) {
+    public void requestToRegister(@RequestHeader("origin") String origin, @RequestBody @Validated UserRegisterForm userDto) {
         log.info("Received POST /api/v1/users/register");
         usersExternalApi.requestToRegister(origin, userDto);
     }

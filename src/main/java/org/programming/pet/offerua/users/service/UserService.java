@@ -54,4 +54,9 @@ public class UserService {
         userEntity.setPassword(encodedPassword);
         return userRepository.save(userEntity);
     }
+
+    public boolean existByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .isPresent();
+    }
 }

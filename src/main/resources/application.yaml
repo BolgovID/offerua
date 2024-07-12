@@ -45,7 +45,9 @@ app:
 
 logging:
   level:
-    org.springframework.data.r2dbc: DEBUG
+    root: INFO
+    org.programming.pet.offerua: DEBUG
+    org.springframework.web: ERROR
     jdbc:
       audit: off
       sqlonly: off

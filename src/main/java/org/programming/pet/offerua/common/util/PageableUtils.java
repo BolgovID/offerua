@@ -13,7 +13,7 @@ public class PageableUtils {
     private static final int DEFAULT_PAGE_NUMBER = 0;
     private static final int DEFAULT_PAGE_SIZE = 15;
 
-    public Pageable getPageable(PaginationRequest request) {
+    public Pageable getPageable(PaginationRequest<?> request) {
         var sortBy = request.getSortBy();
         var direction = request.getDirection();
         var pageNo = request.getPageNo();

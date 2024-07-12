@@ -3,7 +3,8 @@ package org.programming.pet.offerua.vault.service;
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.common.util.TimeUtils;
 import org.programming.pet.offerua.vault.config.properties.VerificationTokenProperties;
-import org.programming.pet.offerua.vault.exception.VerificationTokenExpiredException;
+import org.programming.pet.offerua.vault.exception.TokenExpiredException;
+import org.programming.pet.offerua.vault.exception.VaultErrorCodes;
 import org.programming.pet.offerua.vault.persistence.VerificationToken;
 import org.programming.pet.offerua.vault.persistence.VerificationTokenRepository;
 import org.programming.pet.offerua.vault.service.factory.VerificationTokenFactory;
@@ -32,7 +33,7 @@ public class VerificationTokenService {
     public VerificationToken verifyExpiration(VerificationToken token) {
         if (token.expirationDate().isBefore(TimeUtils.currentTime())) {
             verificationTokenRepository.deleteToken(token.token());
-            throw new VerificationTokenExpiredException(token.token());
+            throw new TokenExpiredException(VaultErrorCodes.VERIFICATION_TOKEN_EXPIRED, token.token(), token.expirationDate().toString());
         }
         return token;
     }

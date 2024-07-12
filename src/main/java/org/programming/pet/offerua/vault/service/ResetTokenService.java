@@ -3,7 +3,8 @@ package org.programming.pet.offerua.vault.service;
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.common.util.TimeUtils;
 import org.programming.pet.offerua.vault.config.properties.ResetTokenProperties;
-import org.programming.pet.offerua.vault.exception.ResetTokenExpiredException;
+import org.programming.pet.offerua.vault.exception.TokenExpiredException;
+import org.programming.pet.offerua.vault.exception.VaultErrorCodes;
 import org.programming.pet.offerua.vault.persistence.ResetToken;
 import org.programming.pet.offerua.vault.persistence.ResetTokenRepository;
 import org.programming.pet.offerua.vault.service.factory.ResetTokenFactory;
@@ -27,7 +28,7 @@ public class ResetTokenService {
     public ResetToken verifyExpiration(ResetToken token) {
         if (token.expiryDate().isBefore(TimeUtils.currentTime())) {
             resetTokenRepository.deleteToken(token.token());
-            throw new ResetTokenExpiredException(token.token());
+            throw new TokenExpiredException(VaultErrorCodes.RESET_TOKEN_EXPIRED, token.token(), token.expiryDate().toString());
         }
         return token;
     }

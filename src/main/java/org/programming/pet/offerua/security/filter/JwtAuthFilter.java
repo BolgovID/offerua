@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.common.util.RequestUtils;
-import org.programming.pet.offerua.security.exception.WebFilterException;
+import org.programming.pet.offerua.security.exception.JwtFilterException;
 import org.programming.pet.offerua.security.service.JwtService;
 import org.programming.pet.offerua.security.service.UserDetailsServiceImpl;
 import org.programming.pet.offerua.security.service.factory.AuthenticationTokenFactory;
@@ -41,21 +41,26 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     private void processToken(String token, HttpServletRequest request) {
-        Optional.ofNullable(token)
-                .filter(vaultInternalApi::isJwtNotBlacklisted)
-                .map(jwtService::extractUsername)
-                .filter(username -> isNotAuthenticated())
-                .map(userDetailsServiceImpl::loadUserByUsername)
-                .filter(userDetails -> jwtService.validateToken(token, userDetails))
-                .ifPresent(user -> authenticateUser(user, request));
+        try {
+            Optional.of(token)
+                    .filter(vaultInternalApi::isJwtNotBlacklisted)
+                    .map(jwtService::extractUsername)
+                    .filter(username -> isNotAuthenticated())
+                    .map(userDetailsServiceImpl::loadUserByUsername)
+                    .filter(userDetails -> jwtService.validateToken(token, userDetails))
+                    .ifPresent(user -> authenticateUser(user, request));
+        } catch (Exception e) {
+            logger.error("Error while processing jwt token" + token, e);
+            throw new JwtFilterException(e);
+        }
     }
 
     private void proceedFilterChain(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         try {
             filterChain.doFilter(request, response);
         } catch (IOException | ServletException e) {
-            logger.error("Error while processing request in " + this.getClass(), e);
-            throw new WebFilterException();
+            logger.error("Error while processing proceed jwt filtering in " + this.getClass(), e);
+            throw new JwtFilterException(e);
         }
     }
 

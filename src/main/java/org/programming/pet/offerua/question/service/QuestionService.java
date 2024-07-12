@@ -1,11 +1,12 @@
 package org.programming.pet.offerua.question.service;
 
 import lombok.RequiredArgsConstructor;
+import org.programming.pet.offerua.common.dto.PaginationRequest;
 import org.programming.pet.offerua.common.util.PageableUtils;
+import org.programming.pet.offerua.question.QuestionDto;
+import org.programming.pet.offerua.question.QuestionFilter;
 import org.programming.pet.offerua.question.QuestionsExternalApi;
 import org.programming.pet.offerua.question.QuestionsInternalApi;
-import org.programming.pet.offerua.question.QuestionDto;
-import org.programming.pet.offerua.question.QuestionFilterRequest;
 import org.programming.pet.offerua.question.mapper.QuestionMapper;
 import org.programming.pet.offerua.question.persistence.QuestionRepository;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,7 @@ public class QuestionService implements QuestionsInternalApi, QuestionsExternalA
     private final QuestionRepository questionRepository;
 
     @Override
-    public Page<QuestionDto> findAllQuestionRelatedToLanguage(UUID id, QuestionFilterRequest questionFilterRequest) {
+    public Page<QuestionDto> findAllQuestionRelatedToLanguage(UUID id, PaginationRequest<QuestionFilter> questionFilterRequest) {
         var pageable = PageableUtils.getPageable(questionFilterRequest);
         return questionRepository.findByInterviewTopicId(id, pageable)
                 .map(questionMapper::toDto);

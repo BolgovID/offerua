@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.util.RequestUtils;
 import org.programming.pet.offerua.security.JwtResponseDto;
 import org.programming.pet.offerua.security.LogoutRequest;
-import org.programming.pet.offerua.vault.exception.RefreshTokenNotExistException;
 import org.programming.pet.offerua.security.service.factory.AuthenticationTokenFactory;
 import org.programming.pet.offerua.vault.VaultInternalApi;
 import org.springframework.security.authentication.AuthenticationManager;

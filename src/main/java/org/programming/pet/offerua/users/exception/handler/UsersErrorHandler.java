@@ -1,57 +1,55 @@
 package org.programming.pet.offerua.users.exception.handler;
 
+import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.programming.pet.offerua.common.dto.ErrorResponse;
-import org.programming.pet.offerua.users.exception.EmailExistRegisterException;
-import org.programming.pet.offerua.users.exception.LinkEncodingException;
-import org.programming.pet.offerua.users.exception.LinkExpiredException;
-import org.programming.pet.offerua.users.exception.UserNotFoundException;
+import org.programming.pet.offerua.common.dto.ApiErrorResponse;
+import org.programming.pet.offerua.common.exception.handler.BaseErrorHandler;
+import org.programming.pet.offerua.users.exception.UserExistException;
+import org.programming.pet.offerua.users.exception.UserNotExistException;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 
-@ControllerAdvice
+@RestControllerAdvice
 @Slf4j
-public class UsersErrorHandler {
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class UsersErrorHandler extends BaseErrorHandler {
+    private static final String VALIDATION_REASON_CODE = "USR-001";
 
-    @ExceptionHandler(EmailExistRegisterException.class)
-    public ResponseEntity<ErrorResponse> handleEmailExistRegisterException(EmailExistRegisterException ex) {
-        log.warn(ex.getMessage());
-        var responseStatus = HttpStatus.CONFLICT;
-        var errorResponse = new ErrorResponse(responseStatus.value(), ex.getLocalizedMessage());
-        return ResponseEntity
-                .status(responseStatus)
-                .body(errorResponse);
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            @Nonnull MethodArgumentNotValidException exception,
+            @Nonnull HttpHeaders headers,
+            @Nonnull HttpStatusCode status,
+            @Nonnull WebRequest request
+    ) {
+        var errors = extractAllValidationErrors(exception);
+        var responseBody = mapToValidationErrorResponse(VALIDATION_REASON_CODE, exception, request, errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
     }
 
-    @ExceptionHandler(LinkEncodingException.class)
-    public ResponseEntity<ErrorResponse> handleLinkEncodingException(LinkEncodingException ex) {
-        log.warn(ex.getMessage());
-        var responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        var errorResponse = new ErrorResponse(responseStatus.value(), ex.getLocalizedMessage());
-        return ResponseEntity
-                .status(responseStatus)
-                .body(errorResponse);
+    @ExceptionHandler(UserExistException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse handleUserExistException(UserExistException ex, HttpServletRequest request) {
+        var responseBody = mapToErrorResponse(HttpStatus.BAD_REQUEST, ex, request);
+        logError(responseBody, ex);
+        return responseBody;
     }
 
-    @ExceptionHandler(LinkExpiredException.class)
-    public ResponseEntity<ErrorResponse> handleLinkExpiredException(LinkExpiredException ex) {
-        log.warn(ex.getMessage());
-        var responseStatus = HttpStatus.BAD_REQUEST;
-        var errorResponse = new ErrorResponse(responseStatus.value(), ex.getLocalizedMessage());
-        return ResponseEntity
-                .status(responseStatus)
-                .body(errorResponse);
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
-        log.warn(ex.getMessage());
-        var responseStatus = HttpStatus.NOT_FOUND;
-        var errorResponse = new ErrorResponse(responseStatus.value(), ex.getLocalizedMessage());
-        return ResponseEntity
-                .status(responseStatus)
-                .body(errorResponse);
+    @ExceptionHandler(UserNotExistException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrorResponse handleUserNotExistException(UserNotExistException ex, HttpServletRequest request) {
+        var responseBody = mapToErrorResponse(HttpStatus.NOT_FOUND, ex, request);
+        logError(responseBody, ex);
+        return responseBody;
     }
 }

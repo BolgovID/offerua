@@ -3,6 +3,7 @@ package org.programming.pet.offerua.gateway;
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.answers.AnswersExternalApi;
 import org.programming.pet.offerua.answers.QuestionWithAnswersDto;
+import org.programming.pet.offerua.answers.dto.AnswerFilter;
 import org.programming.pet.offerua.common.dto.PaginationRequest;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,7 @@ public class AnswerController {
 
     @GetMapping("/answers/questions/{questionId}")
     @Cacheable(cacheNames = "answer", key = "questionId")
-    public QuestionWithAnswersDto getAllAnswers(@PathVariable UUID questionId, PaginationRequest paginationRequest) {
+    public QuestionWithAnswersDto getAllAnswers(@PathVariable UUID questionId, PaginationRequest<AnswerFilter> paginationRequest) {
         return answersExternalApi.findAllAnswersByQuestionId(questionId, paginationRequest);
     }
 }
