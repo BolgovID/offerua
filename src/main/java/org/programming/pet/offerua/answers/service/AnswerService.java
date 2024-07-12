@@ -3,7 +3,7 @@ package org.programming.pet.offerua.answers.service;
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.answers.AnswersExternalApi;
 import org.programming.pet.offerua.answers.QuestionWithAnswersDto;
-import org.programming.pet.offerua.answers.dto.AnswerFilter;
+import org.programming.pet.offerua.answers.AnswerFilter;
 import org.programming.pet.offerua.answers.exception.QuestionErrorCodes;
 import org.programming.pet.offerua.answers.exception.QuestionNotFoundException;
 import org.programming.pet.offerua.answers.mapper.AnswerMapper;

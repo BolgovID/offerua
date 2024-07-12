@@ -1,6 +1,7 @@
 package org.programming.pet.offerua.vault.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.util.TimeUtils;
 import org.programming.pet.offerua.vault.config.properties.RefreshTokenProperties;
 import org.programming.pet.offerua.vault.exception.TokenExpiredException;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @EnableConfigurationProperties(RefreshTokenProperties.class)
+@Slf4j
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final RefreshTokenFactory refreshTokenFactory;
@@ -23,6 +25,7 @@ public class RefreshTokenService {
 
     public RefreshToken createToken(String username) {
         var refreshToken = refreshTokenFactory.create(username, refreshTokenProperties.expiresIn());
+        log.info("Refresh token {} was created. Saving...", refreshToken.token());
         return refreshTokenRepository.save(refreshToken, refreshTokenProperties.expiresIn());
     }
 
@@ -32,6 +35,7 @@ public class RefreshTokenService {
 
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.expiryDate().isBefore(TimeUtils.currentTime())) {
+            log.error("Refresh token {} expired at {}. Initialize delete...", token.token(), token.expiryDate());
             refreshTokenRepository.deleteToken(token.token());
             throw new TokenExpiredException(VaultErrorCodes.REFRESH_TOKEN_EXPIRED, token.token(), token.expiryDate().toString());
         }
@@ -40,6 +44,7 @@ public class RefreshTokenService {
 
     public void deleteToken(String refreshToken) {
         refreshTokenRepository.deleteToken(refreshToken);
+        log.info("Refresh token {} was deleted", refreshToken);
     }
 
 }

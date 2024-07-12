@@ -9,8 +9,6 @@ public interface VaultInternalApi {
 
     String generateRefreshToken(String username);
 
-    void deleteRefreshToken(String token);
-
     void addJwtToBlacklist(String jwt);
 
     boolean isJwtNotBlacklisted(String token);

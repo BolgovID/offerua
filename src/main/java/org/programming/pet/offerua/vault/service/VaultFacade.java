@@ -42,7 +42,7 @@ public class VaultFacade implements VaultInternalApi, VaultExternalApi {
                 .map(verificationTokenService::verifyExpiration)
                 .map(VerificationToken::username);
         usernameOpt
-                .ifPresent(verificationTokenService::deleteToken);
+                .ifPresent(username -> refreshTokenService.deleteToken(token));
         return usernameOpt
                 .orElseThrow(() -> new TokenNotExistException(VaultErrorCodes.VERIFICATION_TOKEN_NOT_EXIST, token));
     }
@@ -53,7 +53,7 @@ public class VaultFacade implements VaultInternalApi, VaultExternalApi {
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::username);
         usernameOpt
-                .ifPresent(refreshTokenService::deleteToken);
+                .ifPresent(username -> refreshTokenService.deleteToken(token));
         return usernameOpt
                 .orElseThrow(() -> new TokenNotExistException(VaultErrorCodes.REFRESH_TOKEN_NOT_EXIST, token));
     }
@@ -64,7 +64,7 @@ public class VaultFacade implements VaultInternalApi, VaultExternalApi {
                 .map(resetTokenService::verifyExpiration)
                 .map(ResetToken::email);
 
-        emailOpt.ifPresent(resetTokenService::deleteToken);
+        emailOpt.ifPresent(username -> refreshTokenService.deleteToken(token));
 
         return emailOpt
                 .orElseThrow(() -> new TokenNotExistException(VaultErrorCodes.RESET_TOKEN_NOT_EXIST, token));
@@ -76,11 +76,6 @@ public class VaultFacade implements VaultInternalApi, VaultExternalApi {
                 .map(resetTokenService::verifyExpiration)
                 .map(ResetToken::token)
                 .orElseThrow(() -> new TokenNotExistException(VaultErrorCodes.RESET_TOKEN_NOT_EXIST, token));
-    }
-
-    @Override
-    public void deleteRefreshToken(String token) {
-        refreshTokenService.deleteToken(token);
     }
 
     @Override

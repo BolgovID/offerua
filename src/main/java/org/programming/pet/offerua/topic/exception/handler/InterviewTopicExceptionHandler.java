@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
 @Slf4j
+@RestControllerAdvice
 public class InterviewTopicExceptionHandler extends BaseErrorHandler {
 
     @ExceptionHandler(InterviewTopicNotExistException.class)
@@ -23,7 +23,7 @@ public class InterviewTopicExceptionHandler extends BaseErrorHandler {
         return errorResponse;
     }
 
-    @ExceptionHandler(InterviewTopicNotExistException.class)
+    @ExceptionHandler(InterviewTopicExistException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse handleInterviewTopicExistException(InterviewTopicExistException exception, HttpServletRequest request) {
         var errorResponse = mapToErrorResponse(HttpStatus.BAD_REQUEST, exception, request);

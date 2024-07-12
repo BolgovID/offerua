@@ -1,6 +1,5 @@
 package org.programming.pet.offerua.answers;
 
-import org.programming.pet.offerua.answers.dto.AnswerFilter;
 import org.programming.pet.offerua.common.dto.PaginationRequest;
 
 import java.util.UUID;

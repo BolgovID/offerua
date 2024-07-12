@@ -42,6 +42,7 @@ public class AuthService {
 
     public JwtResponseDto refreshToken(String refreshToken) {
         var username = vaultInternalApi.popUsernameFromRefreshToken(refreshToken);
+        log.info("Creating new access and refresh tokens for {}", username);
 
         var accessToken = jwtService.generateToken(username);
         var newRefreshToken = vaultInternalApi.generateRefreshToken(username);
@@ -55,6 +56,7 @@ public class AuthService {
     public void logout(HttpServletRequest request, LogoutRequest logoutRequest) {
         RequestUtils.extractTokenFromHeader(request)
                 .ifPresent(vaultInternalApi::addJwtToBlacklist);
-        vaultInternalApi.deleteRefreshToken(logoutRequest.refreshToken());
+        var username = vaultInternalApi.popUsernameFromRefreshToken(logoutRequest.refreshToken());
+        log.info("User {} logged out successfully", username);
     }
 }

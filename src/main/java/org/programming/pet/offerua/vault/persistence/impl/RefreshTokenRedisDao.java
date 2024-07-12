@@ -1,6 +1,7 @@
 package org.programming.pet.offerua.vault.persistence.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.vault.persistence.RefreshToken;
 import org.programming.pet.offerua.vault.persistence.RefreshTokenRepository;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class RefreshTokenRedisDao implements RefreshTokenRepository {
     private final RedisTemplate<String, Object> redisTemplate;
 

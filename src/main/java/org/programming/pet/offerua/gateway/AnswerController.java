@@ -1,9 +1,9 @@
 package org.programming.pet.offerua.gateway;
 
 import lombok.RequiredArgsConstructor;
+import org.programming.pet.offerua.answers.AnswerFilter;
 import org.programming.pet.offerua.answers.AnswersExternalApi;
 import org.programming.pet.offerua.answers.QuestionWithAnswersDto;
-import org.programming.pet.offerua.answers.dto.AnswerFilter;
 import org.programming.pet.offerua.common.dto.PaginationRequest;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
