@@ -42,9 +42,4 @@ public class ResetTokenService {
 
         return resetTokenRepository.save(resetToken, resetTokenProperties.expiresIn());
     }
-
-    public void deleteToken(String token) {
-        resetTokenRepository.deleteToken(token);
-        log.info("Reset redirectTo {}, was deleted", token);
-    }
 }
