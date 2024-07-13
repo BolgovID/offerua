@@ -19,3 +19,12 @@ services:
     ports:
         - "6379:6379"
     restart: unless-stopped
+
+  rabbit-mq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - "5672:5672"
+      - "15672:15672"
