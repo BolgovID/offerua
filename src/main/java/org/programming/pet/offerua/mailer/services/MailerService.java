@@ -2,7 +2,7 @@ package org.programming.pet.offerua.mailer.services;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.programming.pet.offerua.mailer.MailerInternalService;
+import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.mailer.exception.SendMessageException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -10,42 +10,20 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MailerService implements MailerInternalService {
+@Slf4j
+public class MailerService {
     public final JavaMailSender mailSender;
-    private final EmailTemplateEngine emailTemplateEngine;
 
-    @Override
-    public void sendVerificationAccountEmail(String frontEndUrl, String sendTo, String encodedToken) {
+    public void sendMimeMessage(String sendTo, String subject, String emailTemplate) {
         var mimeMessage = mailSender.createMimeMessage();
         var mimeMessageHelper = new MimeMessageHelper(mimeMessage);
-
-        var verificationLink = frontEndUrl + "/auth/verify?data=" + encodedToken;
-        var processedString = emailTemplateEngine.applyStylesForVerificationEmail(verificationLink);
-
         try {
-            mimeMessageHelper.setText(processedString, true);
+            mimeMessageHelper.setText(emailTemplate, true);
             mimeMessageHelper.setTo(sendTo);
-            mimeMessageHelper.setSubject("Verify your email address");
+            mimeMessageHelper.setSubject(subject);
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            throw new SendMessageException();
-        }
-    }
-
-    @Override
-    public void sendResetPasswordEmail(String frontEndUrl, String email, String encodedToken) {
-        var mimeMessage = mailSender.createMimeMessage();
-        var mimeMessageHelper = new MimeMessageHelper(mimeMessage);
-
-        var restoreLink = frontEndUrl + "/auth/restore?data=" + encodedToken;
-        var processedString = emailTemplateEngine.applyStylesForRestorePasswordEmail(restoreLink);
-
-        try {
-            mimeMessageHelper.setText(processedString, true);
-            mimeMessageHelper.setTo(email);
-            mimeMessageHelper.setSubject("Restore your password");
-            mailSender.send(mimeMessage);
-        } catch (MessagingException e) {
+            log.error("Error while sending email to {}: ", sendTo, e);
             throw new SendMessageException();
         }
     }

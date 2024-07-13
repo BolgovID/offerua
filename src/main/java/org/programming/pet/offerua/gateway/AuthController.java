@@ -26,7 +26,7 @@ public class AuthController {
 
     @PostMapping("/refresh-token")
     public JwtResponseDto refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest, HttpServletResponse servletResponse) {
-        log.info("Received POST /refresh-token with {}", refreshTokenRequest);
+        log.info("Received POST /refresh-redirectTo with {}", refreshTokenRequest);
         return securityExternalApi.refreshToken(refreshTokenRequest.token(), servletResponse);
     }
 

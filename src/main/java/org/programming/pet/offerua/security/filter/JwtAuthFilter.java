@@ -50,7 +50,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     .filter(userDetails -> jwtService.validateToken(token, userDetails))
                     .ifPresent(user -> authenticateUser(user, request));
         } catch (Exception e) {
-            logger.error("Error while processing jwt token" + token, e);
+            logger.error("Error while processing jwt redirectTo" + token, e);
             throw new JwtFilterException(e);
         }
     }

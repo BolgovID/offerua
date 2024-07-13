@@ -32,7 +32,7 @@ public class SecurityConfig {
             "/api/v1/login",
             "/api/v1/users/register",
             "/api/v1/users/reset-password",
-            "/api/v1/refresh-token",
+            "/api/v1/refresh-redirectTo",
             "/swagger-ui/index.html"
     };
 

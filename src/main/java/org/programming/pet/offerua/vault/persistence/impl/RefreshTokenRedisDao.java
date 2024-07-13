@@ -16,7 +16,7 @@ import java.util.Optional;
 public class RefreshTokenRedisDao implements RefreshTokenRepository {
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private static final String KEY_PREFIX = "token:refresh:";
+    private static final String KEY_PREFIX = "redirectTo:refresh:";
 
     @Override
     public RefreshToken save(RefreshToken token, Duration ttl) {

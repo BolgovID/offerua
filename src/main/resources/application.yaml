@@ -30,9 +30,9 @@ spring:
         smtp.starttls.enable: true
   rabbitmq:
     host: localhost
-    virtual-host: ${redis-host}
-    username: ${redis-username}
-    password: ${redis-password}
+    virtual-host: ${rabbit-host}
+    username: ${rabbit-username}
+    password: ${rabbit-password}
 
 app:
   security:

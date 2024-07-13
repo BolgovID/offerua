@@ -14,7 +14,7 @@ import java.util.Optional;
 public class ResetTokenRedisDao implements ResetTokenRepository {
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private static final String KEY_PREFIX = "token:reset:";
+    private static final String KEY_PREFIX = "redirectTo:reset:";
 
     @Override
     public ResetToken save(ResetToken token, Duration ttl) {

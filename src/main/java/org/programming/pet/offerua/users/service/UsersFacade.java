@@ -2,12 +2,13 @@ package org.programming.pet.offerua.users.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.programming.pet.offerua.mailer.MailerInternalService;
 import org.programming.pet.offerua.users.*;
 import org.programming.pet.offerua.users.exception.UserExistException;
 import org.programming.pet.offerua.users.exception.UserNotExistException;
 import org.programming.pet.offerua.users.exception.UsersErrorCodes;
 import org.programming.pet.offerua.users.mapper.UserMapper;
+import org.programming.pet.offerua.users.publisher.ResetPasswordPublisher;
+import org.programming.pet.offerua.users.publisher.VerificationEmailPublisher;
 import org.programming.pet.offerua.vault.VaultInternalApi;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,10 @@ public class UsersFacade implements UsersInternalApi, UsersExternalApi {
     private final UserService userService;
     private final UserMapper userMapper;
     private final TokenParameterEncoder tokenParameterEncoder;
-    private final MailerInternalService mailerInternalService;
     private final VaultInternalApi vaultInternalApi;
+    private final UserEmailMessageFactory userEmailMessageFactory;
+    private final VerificationEmailPublisher verificationEmailPublisher;
+    private final ResetPasswordPublisher resetPasswordPublisher;
 
     @Override
     public Optional<UserAuthDto> getUserAuthInfoByUsername(String username) {
@@ -42,8 +45,15 @@ public class UsersFacade implements UsersInternalApi, UsersExternalApi {
 
         var token = vaultInternalApi.generateVerificationToken(userDto.username());
         var encodedToken = tokenParameterEncoder.encodeData(token);
-        //todo change to rabbit
-        mailerInternalService.sendVerificationAccountEmail(frontEndUrl, userEntity.getEmail(), encodedToken);
+
+        var emailMessage = userEmailMessageFactory.createVerificationMessage(
+                userEntity.getEmail(),
+                userEntity.getFirstName(),
+                frontEndUrl,
+                encodedToken
+        );
+
+        verificationEmailPublisher.send(emailMessage);
     }
 
     @Override
@@ -61,18 +71,24 @@ public class UsersFacade implements UsersInternalApi, UsersExternalApi {
 
     @Override
     public void requestToResetPassword(String frontEndUrl, String email) {
-        if (!userService.existByEmail(email)) {
-            throw new UserNotExistException(UsersErrorCodes.USER_EMAIL_NOT_EXIST, email);
-        }
+        var userEntity = userService.findByEmail(email)
+                .orElseThrow(() -> new UserNotExistException(UsersErrorCodes.USERNAME_NOT_EXIST, email));
+
         var token = vaultInternalApi.generateResetToken(email);
-        var confirmationParameter = tokenParameterEncoder.encodeData(token);
-        //todo change to rabbit
-        mailerInternalService.sendResetPasswordEmail(frontEndUrl, email, confirmationParameter);
+        var encodedToken = tokenParameterEncoder.encodeData(token);
+
+        var emailMessage = userEmailMessageFactory.createResetPasswordMessage(
+                email,
+                userEntity.getFirstName(),
+                frontEndUrl,
+                encodedToken
+        );
+
+        resetPasswordPublisher.send(emailMessage);
     }
 
     @Override
     public UserDto confirmReset(UserResetPasswordForm resetPasswordDto) {
-        //validation
         var token = tokenParameterEncoder.decode(resetPasswordDto.token());
         var email = vaultInternalApi.popUserEmailByResetToken(token);
         var userEntity = userService.findByEmail(email)

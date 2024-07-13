@@ -40,7 +40,7 @@ public class UsersController {
 
     @PutMapping("/reset-password")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto confirmReset(@RequestBody UserResetPasswordForm resetPasswordDto) {
+    public UserDto confirmReset(@RequestBody @Validated UserResetPasswordForm resetPasswordDto) {
         log.info("Received PUT /api/v1/users/reset-password");
         return usersExternalApi.confirmReset(resetPasswordDto);
     }

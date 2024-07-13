@@ -14,7 +14,7 @@ import java.util.Optional;
 public class VerificationTokenRedisDao implements VerificationTokenRepository {
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private static final String KEY_PREFIX = "token:verification:";
+    private static final String KEY_PREFIX = "redirectTo:verification:";
 
     @Override
     public VerificationToken save(VerificationToken token, Duration ttl) {

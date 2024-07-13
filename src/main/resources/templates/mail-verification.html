@@ -62,9 +62,9 @@
         Verify Your Email Address
     </div>
     <div class="email-body">
-        <p>Hello!</p>
+        <p>Hello <span th:text="${firstName}"></span>!</p>
         <p>To complete your registration, please verify your email address by clicking the link below:</p>
-        <p><a class="email-link" th:href="${redirectLink}">Verify your email</a></p>
+        <p><a class="email-link" th:href="${redirectTo}">Verify your email</a></p>
         <p>If you didn’t sign up for OfferUa, please ignore this email.</p>
     </div>
     <div class="email-footer">

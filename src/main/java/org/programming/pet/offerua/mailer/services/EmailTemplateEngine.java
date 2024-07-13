@@ -1,6 +1,8 @@
 package org.programming.pet.offerua.mailer.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.programming.pet.offerua.common.rabbit.message.EmailRedirectMessage;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -9,20 +11,26 @@ import org.thymeleaf.context.Context;
 @RequiredArgsConstructor
 public class EmailTemplateEngine {
     private final TemplateEngine templateEngine;
+    private final ObjectMapper objectMapper;
 
     public static final String MAIL_VERIFICATION_TEMPLATE_NAME = "mail-verification.html";
     public static final String RESTORE_PASSWORD_TEMPLATE_NAME = "restore-password.html";
-    public static final String LINK_TEMPLATE_KEY = "redirectLink";
 
-    public String applyStylesForVerificationEmail(String verificationLink) {
-        var context = new Context();
-        context.setVariable(LINK_TEMPLATE_KEY, verificationLink);
+    public String toRestorePasswordTemplate(EmailRedirectMessage emailContent) {
+        var context = prepareTemplateContext(emailContent);
+        return templateEngine.process(RESTORE_PASSWORD_TEMPLATE_NAME, context);
+    }
+
+    public String toVerifiedEmailTemplate(EmailRedirectMessage emailContent) {
+        var context = prepareTemplateContext(emailContent);
         return templateEngine.process(MAIL_VERIFICATION_TEMPLATE_NAME, context);
     }
 
-    public String applyStylesForRestorePasswordEmail(String restoreLink) {
+    private Context prepareTemplateContext(EmailRedirectMessage emailContent) {
+
         var context = new Context();
-        context.setVariable(LINK_TEMPLATE_KEY, restoreLink);
-        return templateEngine.process(RESTORE_PASSWORD_TEMPLATE_NAME, context);
+        context.setVariable("redirectTo", emailContent.redirectTo());
+        context.setVariable("firstName", emailContent.firstName());
+        return context;
     }
 }

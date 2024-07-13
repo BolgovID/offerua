@@ -29,7 +29,7 @@ public class ResetTokenService {
 
     public ResetToken verifyExpiration(ResetToken token) {
         if (token.expiryDate().isBefore(TimeUtils.currentTime())) {
-            log.error("Reset token {} expired at {}. Initialize delete...", token.token(), token.expiryDate());
+            log.error("Reset redirectTo {} expired at {}. Initialize delete...", token.token(), token.expiryDate());
             resetTokenRepository.deleteToken(token.token());
             throw new TokenExpiredException(VaultErrorCodes.RESET_TOKEN_EXPIRED, token.token(), token.expiryDate().toString());
         }
@@ -38,13 +38,13 @@ public class ResetTokenService {
 
     public ResetToken createToken(String email) {
         var resetToken = resetTokenFactory.create(email, resetTokenProperties.expiresIn());
-        log.info("Reset token {} was created. Saving...", resetToken.token());
+        log.info("Reset redirectTo {} was created. Saving...", resetToken.token());
 
         return resetTokenRepository.save(resetToken, resetTokenProperties.expiresIn());
     }
 
     public void deleteToken(String token) {
         resetTokenRepository.deleteToken(token);
-        log.info("Reset token {}, was deleted", token);
+        log.info("Reset redirectTo {}, was deleted", token);
     }
 }
