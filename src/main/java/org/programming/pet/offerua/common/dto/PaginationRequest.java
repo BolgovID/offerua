@@ -10,11 +10,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PaginationRequest<F> {
+public class PaginationRequest {
     Integer pageNo;
     Integer pageSize;
     String sortBy;
     String direction;
-    F filter;
 }
 

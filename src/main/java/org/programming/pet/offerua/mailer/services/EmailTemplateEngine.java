@@ -1,6 +1,5 @@
 package org.programming.pet.offerua.mailer.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.common.rabbit.message.EmailRedirectMessage;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,6 @@ import org.thymeleaf.context.Context;
 @RequiredArgsConstructor
 public class EmailTemplateEngine {
     private final TemplateEngine templateEngine;
-    private final ObjectMapper objectMapper;
 
     public static final String MAIL_VERIFICATION_TEMPLATE_NAME = "mail-verification.html";
     public static final String RESTORE_PASSWORD_TEMPLATE_NAME = "restore-password.html";

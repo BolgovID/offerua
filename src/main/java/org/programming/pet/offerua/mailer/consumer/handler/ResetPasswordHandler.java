@@ -12,16 +12,15 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class EmailVerificationHandler implements AbstractMessageHandler<EmailRedirectMessage> {
+public class ResetPasswordHandler implements AbstractMessageHandler<EmailRedirectMessage> {
     private final EmailTemplateEngine emailTemplateEngine;
     private final MailerService mailerService;
-
     @Override
     public void handle(EmailRedirectMessage message) {
         try {
-            log.debug("Creating email verification message");
+            log.debug("Creating email containing reset password info");
             log.debug("Sending message to {}...", message.sendTo());
-            var emailTemplate = emailTemplateEngine.toVerifiedEmailTemplate(message);
+            var emailTemplate = emailTemplateEngine.toRestorePasswordTemplate(message);
             log.debug("Sending message...");
             mailerService.sendMimeMessage(message.sendTo(), "Verify your email address", emailTemplate);
             log.debug("Message was sent successfully to {}...", message.sendTo());

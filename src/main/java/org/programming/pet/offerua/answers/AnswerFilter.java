@@ -1,4 +1,6 @@
 package org.programming.pet.offerua.answers;
 
-public record AnswerFilter() {
+import org.programming.pet.offerua.common.dto.PaginationRequest;
+
+public class AnswerFilter extends PaginationRequest {
 }
