@@ -5,28 +5,28 @@ import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.rabbit.AbstractMessageHandler;
 import org.programming.pet.offerua.common.rabbit.message.EmailRedirectMessage;
 import org.programming.pet.offerua.mailer.exception.SendMessageException;
-import org.programming.pet.offerua.mailer.services.EmailTemplateEngine;
 import org.programming.pet.offerua.mailer.services.MailerService;
+import org.programming.pet.offerua.mailer.services.factory.EmailContentFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class EmailVerificationHandler implements AbstractMessageHandler<EmailRedirectMessage> {
-    private final EmailTemplateEngine emailTemplateEngine;
     private final MailerService mailerService;
+    private final EmailContentFactory emailContentFactory;
 
     @Override
     public void handle(EmailRedirectMessage message) {
         try {
-            log.debug("Creating email verification message");
+            log.info("Creating email verification message");
+            var emailContent = emailContentFactory.createVerifyEmailContent(message);
             log.debug("Sending message to {}...", message.sendTo());
-            var emailTemplate = emailTemplateEngine.toVerifiedEmailTemplate(message);
-            log.debug("Sending message...");
-            mailerService.sendMimeMessage(message.sendTo(), "Verify your email address", emailTemplate);
-            log.debug("Message was sent successfully to {}...", message.sendTo());
+            mailerService.sendMimeMessage(message.sendTo(), emailContent);
+            log.info("Message was sent successfully to {}", message.sendTo());
         } catch (SendMessageException exception) {
-            log.error("Message {} return back to queue due to exception while sending email", message);
+            log.error("Message {} will return back to queue due to exception while sending email", message, exception);
+            throw exception;
         }
     }
 }

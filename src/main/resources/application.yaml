@@ -49,6 +49,8 @@ app:
         expiresIn: 1d
 
 logging:
+  pattern:
+    config: config/logback.xml
   level:
     root: INFO
     org.programming.pet.offerua: DEBUG
@@ -57,7 +59,7 @@ logging:
       audit: off
       sqlonly: off
       connection: off
-      sqltiming: info
+      sqltiming: off
       resultset: off
       resultsettable: off
 

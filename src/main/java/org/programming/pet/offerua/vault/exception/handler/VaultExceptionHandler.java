@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.dto.ApiErrorResponse;
 import org.programming.pet.offerua.common.exception.handler.BaseErrorHandler;
+import org.programming.pet.offerua.common.util.ControllerAdviceUtils;
+import org.programming.pet.offerua.common.util.LoggerUtils;
 import org.programming.pet.offerua.vault.exception.TokenExpiredException;
 import org.programming.pet.offerua.vault.exception.TokenNotExistException;
 import org.springframework.http.HttpStatus;
@@ -18,16 +20,16 @@ public class VaultExceptionHandler extends BaseErrorHandler {
     @ExceptionHandler(TokenNotExistException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiErrorResponse handleTokenNotExistException(TokenNotExistException exception, HttpServletRequest request) {
-        var errorResponse = mapToErrorResponse(HttpStatus.UNAUTHORIZED, exception, request);
-        logError(errorResponse, exception);
+        var errorResponse = ControllerAdviceUtils.mapToErrorResponse(HttpStatus.UNAUTHORIZED, exception, request);
+        LoggerUtils.logAdviceError(errorResponse.id(), exception);
         return errorResponse;
     }
 
     @ExceptionHandler(TokenExpiredException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiErrorResponse handleTokenExpiredException(TokenExpiredException exception, HttpServletRequest request) {
-        var errorResponse = mapToErrorResponse(HttpStatus.UNAUTHORIZED, exception, request);
-        logError(errorResponse, exception);
+        var errorResponse = ControllerAdviceUtils.mapToErrorResponse(HttpStatus.UNAUTHORIZED, exception, request);
+        LoggerUtils.logAdviceError(errorResponse.id(), exception);
         return errorResponse;
     }
 }

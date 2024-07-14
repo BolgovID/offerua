@@ -1,6 +1,6 @@
 package org.programming.pet.offerua.users;
 
-public record UserEmailDto(
+public record EmailConfirmationDto(
         String email
 ) {
 }

@@ -7,8 +7,10 @@ import org.programming.pet.offerua.mailer.consumer.handler.EmailVerificationHand
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class EmailVerificationListener extends AbstractMessageListener<EmailRedirectMessage> {
+
     public EmailVerificationListener(EmailVerificationHandler handler) {
         super(handler);
     }

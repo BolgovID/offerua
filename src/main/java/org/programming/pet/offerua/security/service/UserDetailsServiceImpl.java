@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.security.service.factory.UserDetailsFactory;
 import org.programming.pet.offerua.users.UsersInternalApi;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @Slf4j
@@ -26,5 +29,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                             return new UsernameNotFoundException("could not found userInfo..!!");
                         }
                 );
+    }
+
+    public List<String> getUserAuthorityNames(String username) {
+        return loadUserByUsername(username)
+                .getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
     }
 }

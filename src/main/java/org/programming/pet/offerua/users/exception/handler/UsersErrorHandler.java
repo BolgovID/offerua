@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.programming.pet.offerua.common.dto.ApiErrorResponse;
 import org.programming.pet.offerua.common.exception.handler.BaseErrorHandler;
+import org.programming.pet.offerua.common.util.ControllerAdviceUtils;
+import org.programming.pet.offerua.common.util.LoggerUtils;
 import org.programming.pet.offerua.users.exception.UserExistException;
 import org.programming.pet.offerua.users.exception.UserNotExistException;
 import org.springframework.core.Ordered;
@@ -23,34 +25,35 @@ import java.util.UUID;
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class UsersErrorHandler extends BaseErrorHandler {
-
+    private static final String VALIDATION_ERROR_CODE = "USR-001";
 
     @ExceptionHandler(ConstraintViolationException.class)
     public void constraintViolationException(HttpServletResponse response, ConstraintViolationException exception) throws IOException {
-        logError(UUID.randomUUID().toString(), exception);
+        LoggerUtils.logAdviceError(UUID.randomUUID().toString(), exception);
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        var responseBody = mapToErrorResponse(HttpStatus.BAD_REQUEST, ex, request);
-        logError(responseBody, ex);
+        var responseBody = ControllerAdviceUtils.mapToErrorResponse(HttpStatus.BAD_REQUEST, VALIDATION_ERROR_CODE, ex, request);
+        log.warn("Invalid user input: {}", responseBody);
         return responseBody;
     }
 
     @ExceptionHandler(UserExistException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse handleUserExistException(UserExistException ex, HttpServletRequest request) {
-        var responseBody = mapToErrorResponse(HttpStatus.BAD_REQUEST, ex, request);
-        logError(responseBody, ex);
+        var responseBody = ControllerAdviceUtils.mapToErrorResponse(HttpStatus.BAD_REQUEST, ex, request);
+        LoggerUtils.logAdviceError(responseBody.id(), ex);
         return responseBody;
     }
 
     @ExceptionHandler(UserNotExistException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiErrorResponse handleUserNotExistException(UserNotExistException ex, HttpServletRequest request) {
-        var responseBody = mapToErrorResponse(HttpStatus.NOT_FOUND, ex, request);
-        logError(responseBody, ex);
+        var responseBody = ControllerAdviceUtils.mapToErrorResponse(HttpStatus.NOT_FOUND, ex, request);
+        LoggerUtils.logAdviceError(responseBody.id(), ex);
         return responseBody;
     }
 }

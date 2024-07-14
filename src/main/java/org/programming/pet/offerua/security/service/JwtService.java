@@ -5,8 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.programming.pet.offerua.common.util.TimeUtils;
 import org.programming.pet.offerua.common.config.properties.JwtProperties;
+import org.programming.pet.offerua.common.util.TimeUtils;
 import org.programming.pet.offerua.security.service.factory.JwtFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +23,8 @@ import java.util.function.Function;
 public class JwtService {
     private final JwtProperties jwtProperties;
     private final JwtFactory jwtFactory;
+    private final UserDetailsServiceImpl userDetailsService;
+
 
     public boolean validateToken(String token, UserDetails userDetails) {
         var username = extractUsername(token);
@@ -31,6 +33,9 @@ public class JwtService {
 
     public String generateToken(String username) {
         var claims = new HashMap<String, Object>();
+
+        var roles = userDetailsService.getUserAuthorityNames(username);
+        claims.put("roles", roles);
         return jwtFactory.createToken(claims, username, getSignKey());
     }
 

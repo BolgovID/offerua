@@ -21,7 +21,6 @@ public class AuthService {
     private final JwtService jwtService;
     private final VaultInternalApi vaultInternalApi;
 
-
     public JwtResponseDto authenticate(String username, String password) {
         var authToken = authenticationTokenFactory.create(username, password);
         var authentication = authenticationManager.authenticate(authToken);
@@ -29,7 +28,6 @@ public class AuthService {
         if (!authentication.isAuthenticated()) {
             throw new UsernameNotFoundException("Invalid userInfo request!");
         }
-
         var refreshToken = vaultInternalApi.generateRefreshToken(username);
         var accessToken = jwtService.generateToken(username);
         log.info("User {} authenticated successfully", username);
@@ -43,6 +41,7 @@ public class AuthService {
     public JwtResponseDto refreshToken(String refreshToken) {
         var username = vaultInternalApi.popUsernameFromRefreshToken(refreshToken);
         log.info("Creating new access and refresh tokens for {}", username);
+
 
         var accessToken = jwtService.generateToken(username);
         var newRefreshToken = vaultInternalApi.generateRefreshToken(username);
@@ -59,4 +58,5 @@ public class AuthService {
         var username = vaultInternalApi.popUsernameFromRefreshToken(logoutRequest.refreshToken());
         log.info("User {} logged out successfully", username);
     }
+
 }

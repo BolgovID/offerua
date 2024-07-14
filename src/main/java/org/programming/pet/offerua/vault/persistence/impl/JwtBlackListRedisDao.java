@@ -16,7 +16,7 @@ public class JwtBlackListRedisDao implements JwtBlackListRepository {
     private final RedisTemplate<String, Object> redisTemplate;
     private final JwtProperties jwtProperties;
 
-    private static final String KEY_PREFIX = "redirectTo:jwt:blacklist:";
+    private static final String KEY_PREFIX = "email:jwt:blacklist:";
 
     @Override
     public String save(String token, Duration ttl) {

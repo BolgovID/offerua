@@ -23,19 +23,19 @@ public class UsersController {
 
     @PutMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto confirmRegistration(@RequestBody String data) {
+    public UserDto confirmRegistration(@RequestBody String token) {
         log.info("Received PUT /api/v1/users/register");
-        return usersExternalApi.confirmRegistration(data);
+        return usersExternalApi.confirmRegistration(token);
     }
 
     @PostMapping("/reset-password")
     @ResponseStatus(HttpStatus.OK)
     public void resetPassword(
             @RequestHeader("origin") String origin,
-            @RequestBody UserEmailDto emailDto
+            @RequestBody EmailConfirmationDto confirmationDto
     ) {
-        log.info("Received POST /api/v1/users/reset-password for {}", emailDto);
-        usersExternalApi.requestToResetPassword(origin, emailDto.email());
+        log.info("Received POST /api/v1/users/reset-password for {}", confirmationDto.email());
+        usersExternalApi.requestToResetPassword(origin, confirmationDto.email());
     }
 
     @PutMapping("/reset-password")

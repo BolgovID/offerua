@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.dto.ApiErrorResponse;
 import org.programming.pet.offerua.common.exception.handler.BaseErrorHandler;
+import org.programming.pet.offerua.common.util.ControllerAdviceUtils;
+import org.programming.pet.offerua.common.util.LoggerUtils;
 import org.programming.pet.offerua.topic.exception.InterviewTopicExistException;
 import org.programming.pet.offerua.topic.exception.InterviewTopicNotExistException;
 import org.springframework.http.HttpStatus;
@@ -18,16 +20,16 @@ public class InterviewTopicExceptionHandler extends BaseErrorHandler {
     @ExceptionHandler(InterviewTopicNotExistException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiErrorResponse handleInterviewTopicNotExistException(InterviewTopicNotExistException exception, HttpServletRequest request) {
-        var errorResponse = mapToErrorResponse(HttpStatus.NOT_FOUND, exception, request);
-        logError(errorResponse.id(), exception);
+        var errorResponse = ControllerAdviceUtils.mapToErrorResponse(HttpStatus.NOT_FOUND, exception, request);
+        LoggerUtils.logAdviceError(errorResponse.id(), exception);
         return errorResponse;
     }
 
     @ExceptionHandler(InterviewTopicExistException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse handleInterviewTopicExistException(InterviewTopicExistException exception, HttpServletRequest request) {
-        var errorResponse = mapToErrorResponse(HttpStatus.BAD_REQUEST, exception, request);
-        logError(errorResponse.id(), exception);
+        var errorResponse = ControllerAdviceUtils.mapToErrorResponse(HttpStatus.BAD_REQUEST, exception, request);
+        LoggerUtils.logAdviceError(errorResponse.id(), exception);
         return errorResponse;
     }
 }

@@ -7,6 +7,7 @@ import org.programming.pet.offerua.users.exception.UserExistException;
 import org.programming.pet.offerua.users.exception.UserNotExistException;
 import org.programming.pet.offerua.users.exception.UsersErrorCodes;
 import org.programming.pet.offerua.users.mapper.UserMapper;
+import org.programming.pet.offerua.users.persistence.UserStatus;
 import org.programming.pet.offerua.users.publisher.ResetPasswordPublisher;
 import org.programming.pet.offerua.users.publisher.VerificationEmailPublisher;
 import org.programming.pet.offerua.vault.VaultInternalApi;
@@ -72,7 +73,11 @@ public class UsersFacade implements UsersInternalApi, UsersExternalApi {
     @Override
     public void requestToResetPassword(String frontEndUrl, String email) {
         var userEntity = userService.findByEmail(email)
-                .orElseThrow(() -> new UserNotExistException(UsersErrorCodes.USERNAME_NOT_EXIST, email));
+                .orElseThrow(() -> new UserNotExistException(UsersErrorCodes.USER_EMAIL_NOT_EXIST, email));
+
+        if (userEntity.getUserStatus() == UserStatus.NOT_CONFIRMED) {
+            throw new UserNotExistException(UsersErrorCodes.USER_EMAIL_NOT_CONFIRMED, email);
+        }
 
         var token = vaultInternalApi.generateResetToken(email);
         var encodedToken = tokenParameterEncoder.encodeData(token);
@@ -88,6 +93,7 @@ public class UsersFacade implements UsersInternalApi, UsersExternalApi {
     }
 
     @Override
+    @Transactional
     public UserDto confirmReset(UserResetPasswordForm resetPasswordDto) {
         var token = tokenParameterEncoder.decode(resetPasswordDto.token());
         var email = vaultInternalApi.popUserEmailByResetToken(token);
