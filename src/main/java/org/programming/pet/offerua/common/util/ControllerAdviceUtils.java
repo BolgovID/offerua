@@ -24,17 +24,6 @@ public class ControllerAdviceUtils {
 
     }
 
-    public ApiErrorResponse createInternalServerError(HttpServletRequest servletRequest, Exception exception) {
-        return ApiErrorResponse.builder()
-                .id(UUID.randomUUID().toString())
-                .code("INTERNAL_SERVER_ERROR")
-                .message(prepareDetailMessageBasedOnRole(servletRequest, exception.getLocalizedMessage()))
-                .errors(Collections.emptyMap())
-                .timestamp(TimeUtils.currentTime())
-                .build();
-
-    }
-
     public ApiErrorResponse mapToErrorResponse(AbstractException exception) {
         return ApiErrorResponse.builder()
                 .id(UUID.randomUUID().toString())
