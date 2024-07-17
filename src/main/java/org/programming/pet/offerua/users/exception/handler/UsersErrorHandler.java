@@ -12,17 +12,23 @@ import org.programming.pet.offerua.users.exception.UserExistException;
 import org.programming.pet.offerua.users.exception.UserNotExistException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 
 import java.io.IOException;
 import java.util.UUID;
 
 @Slf4j
-@RestControllerAdvice
+@ControllerAdvice
+@ResponseBody
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class UsersErrorHandler extends BaseErrorHandler {
     private static final String VALIDATION_ERROR_CODE = "USR-001";
@@ -33,13 +39,25 @@ public class UsersErrorHandler extends BaseErrorHandler {
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        var responseBody = ControllerAdviceUtils.mapToErrorResponse(HttpStatus.BAD_REQUEST, VALIDATION_ERROR_CODE, ex, request);
-        log.warn("Invalid user input: {}", responseBody);
-        return responseBody;
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request
+    ) {
+        var requestServlet = (HttpServletRequest) request;
+        var responseBody = ControllerAdviceUtils.mapToErrorResponse(HttpStatus.BAD_REQUEST, VALIDATION_ERROR_CODE, ex, requestServlet);
+        return new ResponseEntity<>(responseBody, headers, status);
     }
+
+    //    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public ApiErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+//        var responseBody = ControllerAdviceUtils.mapToErrorResponse(HttpStatus.BAD_REQUEST, VALIDATION_ERROR_CODE, ex, request);
+//        log.warn("Invalid user input: {}", responseBody);
+//        return responseBody;
+//    }
 
     @ExceptionHandler(UserExistException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
