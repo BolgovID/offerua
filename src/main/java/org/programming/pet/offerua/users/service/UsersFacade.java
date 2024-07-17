@@ -53,7 +53,6 @@ public class UsersFacade implements UsersInternalApi, UsersExternalApi {
                 frontEndUrl,
                 encodedToken
         );
-
         verificationEmailPublisher.send(emailMessage);
     }
 

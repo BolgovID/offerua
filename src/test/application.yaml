@@ -35,12 +35,11 @@ spring:
     password: ${rabbit-password}
     listener:
       simple:
-        retry:
-          enabled: true
-          initial-interval: 3s
-          max-attempts: 6
-          max-interval: 20s
-          multiplier: 2
+        default-requeue-rejected: 'false'
+rabbitmq:
+  retry:
+    delay-in-ms: 1000
+    count: 3
 
 app:
   security:
@@ -55,10 +54,6 @@ app:
         expiresIn: 1d
       reset:
         expiresIn: 1d
-  rabbitmq:
-    retry:
-      delay: 3s
-      count: 3
 
 logging:
   pattern:

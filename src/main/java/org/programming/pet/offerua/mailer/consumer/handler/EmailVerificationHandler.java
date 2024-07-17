@@ -4,29 +4,25 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.rabbit.AbstractMessageHandler;
 import org.programming.pet.offerua.common.rabbit.message.EmailRedirectMessage;
-import org.programming.pet.offerua.mailer.exception.SendMessageException;
 import org.programming.pet.offerua.mailer.services.MailerService;
 import org.programming.pet.offerua.mailer.services.factory.EmailContentFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class EmailVerificationHandler implements AbstractMessageHandler<EmailRedirectMessage> {
     private final MailerService mailerService;
     private final EmailContentFactory emailContentFactory;
 
     @Override
     public void handle(EmailRedirectMessage message) {
-        try {
-            log.info("Creating email verification message");
-            var emailContent = emailContentFactory.createVerifyEmailContent(message);
-            log.debug("Sending message to {}...", message.sendTo());
-            mailerService.sendMimeMessage(message.sendTo(), emailContent);
-            log.info("Message was sent successfully to {}", message.sendTo());
-        } catch (SendMessageException exception) {
-            log.error("Message {} will return back to queue due to exception while sending email", message, exception);
-            throw exception;
-        }
+        log.info("Creating email verification message");
+        var emailContent = emailContentFactory.createVerifyEmailContent(message);
+        log.debug("Sending message to {}...", message.sendTo());
+        mailerService.sendMimeMessage(message.sendTo(), emailContent);
+        log.info("Message was sent successfully to {}", message.sendTo());
     }
 }

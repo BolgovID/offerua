@@ -8,7 +8,6 @@ import org.programming.pet.offerua.question.QuestionDto;
 import org.programming.pet.offerua.question.QuestionFilter;
 import org.programming.pet.offerua.question.QuestionWithAnswersDto;
 import org.programming.pet.offerua.question.QuestionsExternalApi;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +28,6 @@ public class QuestionController {
     }
 
     @GetMapping("/{questionId}")
-    @Cacheable(cacheNames = "answer", key = "questionId")
     public QuestionWithAnswersDto getQuestionWithAnswers(@PathVariable UUID questionId, AnswerFilter paginationRequest) {
         return questionsExternalApi.findAllAnswersByQuestionId(questionId, paginationRequest);
     }

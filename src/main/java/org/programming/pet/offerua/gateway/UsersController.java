@@ -16,7 +16,10 @@ public class UsersController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.OK)
-    public void requestToRegister(@RequestHeader("origin") String origin, @RequestBody @Validated UserRegisterForm userDto) {
+    public void requestToRegister(
+            @RequestHeader("origin") String origin,
+            @RequestBody @Validated UserRegisterForm userDto
+    ) {
         log.info("Received POST /api/v1/users/register");
         usersExternalApi.requestToRegister(origin, userDto);
     }
@@ -30,10 +33,7 @@ public class UsersController {
 
     @PostMapping("/reset-password")
     @ResponseStatus(HttpStatus.OK)
-    public void resetPassword(
-            @RequestHeader("origin") String origin,
-            @RequestBody EmailConfirmationDto confirmationDto
-    ) {
+    public void resetPassword(@RequestHeader("origin") String origin, @RequestBody EmailConfirmationDto confirmationDto) {
         log.info("Received POST /api/v1/users/reset-password for {}", confirmationDto.email());
         usersExternalApi.requestToResetPassword(origin, confirmationDto.email());
     }
