@@ -5,7 +5,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.dto.ApiErrorResponse;
 import org.programming.pet.offerua.common.exception.AbstractException;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.Collections;
@@ -29,41 +29,42 @@ public class ControllerAdviceUtils {
                 .id(UUID.randomUUID().toString())
                 .code("INTERNAL_SERVER_ERROR")
                 .message(prepareDetailMessageBasedOnRole(servletRequest, exception.getLocalizedMessage()))
-                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .path(servletRequest.getRequestURI())
-                .method(servletRequest.getMethod())
                 .errors(Collections.emptyMap())
                 .timestamp(TimeUtils.currentTime())
                 .build();
 
     }
 
-    public ApiErrorResponse mapToErrorResponse(HttpStatus httpStatus, AbstractException exception, HttpServletRequest request) {
+    public ApiErrorResponse mapToErrorResponse(AbstractException exception) {
         return ApiErrorResponse.builder()
                 .id(UUID.randomUUID().toString())
                 .code(exception.getReasonCode())
                 .message(exception.getReasonDescription())
-                .statusCode(httpStatus.value())
-                .path(request.getRequestURI())
-                .method(request.getMethod())
                 .errors(Collections.emptyMap())
                 .timestamp(TimeUtils.currentTime())
                 .build();
 
     }
 
-    public ApiErrorResponse mapToErrorResponse(HttpStatus httpStatus, String errorCode, MethodArgumentNotValidException exception, HttpServletRequest request) {
+    public ApiErrorResponse mapToErrorResponse(String errorCode, MethodArgumentNotValidException exception) {
         return ApiErrorResponse.builder()
                 .id(UUID.randomUUID().toString())
                 .code(errorCode)
                 .message(exception.getBody().getDetail())
-                .statusCode(httpStatus.value())
-                .path(request.getRequestURI())
-                .method(request.getMethod())
                 .errors(ValidationUtils.extractAllValidationErrors(exception))
                 .timestamp(TimeUtils.currentTime())
                 .build();
 
+    }
+
+    public static ApiErrorResponse mapToErrorResponse(String errorCode, AccessDeniedException exception) {
+        return ApiErrorResponse.builder()
+                .id(UUID.randomUUID().toString())
+                .code(errorCode)
+                .message(exception.getLocalizedMessage())
+                .errors(Collections.emptyMap())
+                .timestamp(TimeUtils.currentTime())
+                .build();
     }
 
 

@@ -1,7 +1,6 @@
 package org.programming.pet.offerua.vault.service;
 
 import lombok.RequiredArgsConstructor;
-import org.programming.pet.offerua.vault.VaultExternalApi;
 import org.programming.pet.offerua.vault.VaultInternalApi;
 import org.programming.pet.offerua.vault.exception.TokenNotExistException;
 import org.programming.pet.offerua.vault.exception.VaultErrorCodes;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class VaultFacade implements VaultInternalApi, VaultExternalApi {
+public class VaultFacade implements VaultInternalApi {
     private final VerificationTokenService verificationTokenService;
     private final RefreshTokenService refreshTokenService;
     private final JwtBlackListService jwtBlackListService;
@@ -67,14 +66,6 @@ public class VaultFacade implements VaultInternalApi, VaultExternalApi {
         emailOpt.ifPresent(username -> refreshTokenService.deleteToken(token));
 
         return emailOpt
-                .orElseThrow(() -> new TokenNotExistException(VaultErrorCodes.RESET_TOKEN_NOT_EXIST, token));
-    }
-
-    @Override
-    public String validateResetToken(String token) {
-        return resetTokenService.findByToken(token)
-                .map(resetTokenService::verifyExpiration)
-                .map(ResetToken::token)
                 .orElseThrow(() -> new TokenNotExistException(VaultErrorCodes.RESET_TOKEN_NOT_EXIST, token));
     }
 

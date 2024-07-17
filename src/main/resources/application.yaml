@@ -42,6 +42,9 @@ spring:
           max-interval: 20s
           multiplier: 2
 
+server:
+  error:
+    include-message: always
 app:
   security:
     tokens:
@@ -55,10 +58,6 @@ app:
         expiresIn: 1d
       reset:
         expiresIn: 1d
-  rabbitmq:
-    retry:
-      delay: 3s
-      count: 3
 
 logging:
   pattern:
