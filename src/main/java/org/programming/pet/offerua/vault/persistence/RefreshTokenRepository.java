@@ -7,9 +7,9 @@ import java.util.Optional;
 
 @Repository
 public interface RefreshTokenRepository {
-    RefreshToken save(RefreshToken token, Duration ttl);
+    String save(String token, Duration ttl);
 
-    Optional<RefreshToken> findByToken(String token);
+    Optional<String> findByToken(String token);
 
     void deleteToken(String token);
 }

@@ -1,16 +1,16 @@
 package org.programming.pet.offerua.security.service.factory;
 
 import lombok.RequiredArgsConstructor;
-import org.programming.pet.offerua.common.config.properties.JwtProperties;
+import org.programming.pet.offerua.common.config.properties.AccessTokenProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@EnableConfigurationProperties(JwtProperties.class)
+@EnableConfigurationProperties(AccessTokenProperties.class)
 public class CookieResponseFactory {
-    private final JwtProperties jwtProperties;
+    private final AccessTokenProperties accessTokenProperties;
 
     public static final String ACCESS_TOKEN = "access_token";
 
@@ -19,7 +19,7 @@ public class CookieResponseFactory {
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
-                .maxAge(jwtProperties.expiresIn())
+                .maxAge(accessTokenProperties.expiresIn())
                 .build();
     }
 }

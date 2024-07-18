@@ -10,7 +10,7 @@ import java.time.Duration;
 
 @ConfigurationProperties("app.security.tokens.jwt")
 @Validated
-public record JwtProperties(
+public record AccessTokenProperties(
         @NotNull
         String secret,
         @NotEmpty

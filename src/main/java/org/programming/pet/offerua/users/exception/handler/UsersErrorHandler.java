@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.programming.pet.offerua.common.dto.ApiErrorResponse;
+import org.programming.pet.offerua.common.exception.TokenExpiredException;
 import org.programming.pet.offerua.common.util.ControllerAdviceUtils;
 import org.programming.pet.offerua.common.util.LoggerUtils;
 import org.programming.pet.offerua.users.exception.UserExistException;
@@ -77,5 +78,14 @@ public class UsersErrorHandler extends ResponseEntityExceptionHandler {
         var responseBody = ControllerAdviceUtils.mapToErrorResponse(ex);
         LoggerUtils.logAdviceError(responseBody.id(), ex);
         return responseBody;
+    }
+
+    @ResponseBody
+    @ExceptionHandler(TokenExpiredException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiErrorResponse handleTokenExpiredException(TokenExpiredException exception) {
+        var errorResponse = ControllerAdviceUtils.mapToErrorResponse(exception);
+        LoggerUtils.logAdviceError(errorResponse.id(), exception);
+        return errorResponse;
     }
 }

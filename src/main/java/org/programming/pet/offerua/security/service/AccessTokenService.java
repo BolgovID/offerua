@@ -1,10 +1,7 @@
 package org.programming.pet.offerua.security.service;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
-import org.programming.pet.offerua.common.config.properties.JwtProperties;
-import org.programming.pet.offerua.common.util.EncryptionUtils;
+import org.programming.pet.offerua.common.config.properties.AccessTokenProperties;
 import org.programming.pet.offerua.common.util.JwtUtils;
 import org.programming.pet.offerua.common.util.TimeUtils;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -14,15 +11,15 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 
 @Component
-@EnableConfigurationProperties(JwtProperties.class)
+@EnableConfigurationProperties(AccessTokenProperties.class)
 @RequiredArgsConstructor
-public class JwtService {
-    private final JwtProperties jwtProperties;
+public class AccessTokenService {
+    private final AccessTokenProperties accessTokenProperties;
     private final UserDetailsServiceImpl userDetailsService;
 
     public boolean validateToken(String token, UserDetails userDetails) {
         var username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token, jwtProperties.secret());
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token, accessTokenProperties.secret());
     }
 
     public String generateToken(String username) {
@@ -30,21 +27,14 @@ public class JwtService {
 
         var roles = userDetailsService.getUserAuthorityNames(username);
         claims.put("roles", roles);
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(username)
-                .setIssuer(jwtProperties.issuer())
-                .setIssuedAt(TimeUtils.currentDate())
-                .setExpiration(JwtUtils.calculateExpirationDate(jwtProperties.expiresIn()))
-                .signWith(EncryptionUtils.signKeyHmac(jwtProperties.secret()), SignatureAlgorithm.HS256)
-                .compact();
+        return JwtUtils.generateToken(username, claims, accessTokenProperties.issuer(), accessTokenProperties.expiresIn(), accessTokenProperties.secret());
     }
 
     public String extractUsername(String token) {
-        return JwtUtils.extractUsername(token, jwtProperties.secret());
+        return JwtUtils.extractSubject(token, accessTokenProperties.secret());
     }
 
-    public Boolean isTokenExpired(String token, String secret) {
+    public boolean isTokenExpired(String token, String secret) {
         return JwtUtils.extractExpiration(token, secret)
                 .before(TimeUtils.currentDate());
     }

@@ -2,7 +2,6 @@ package org.programming.pet.offerua.vault.persistence.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.programming.pet.offerua.vault.persistence.RefreshToken;
 import org.programming.pet.offerua.vault.persistence.RefreshTokenRepository;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,18 +15,18 @@ import java.util.Optional;
 public class RefreshTokenRedisDao implements RefreshTokenRepository {
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private static final String KEY_PREFIX = "redirectTo:refresh:";
+    private static final String KEY_PREFIX = "token:refresh:";
 
     @Override
-    public RefreshToken save(RefreshToken token, Duration ttl) {
-        redisTemplate.opsForHash().put(KEY_PREFIX, token.token(), token);
-        redisTemplate.expire(KEY_PREFIX + token.token(), ttl);
+    public String save(String token, Duration ttl) {
+        redisTemplate.opsForHash().put(KEY_PREFIX, token, token);
+        redisTemplate.expire(KEY_PREFIX + token, ttl);
         return token;
     }
 
     @Override
-    public Optional<RefreshToken> findByToken(String token) {
-        var refreshToken = (RefreshToken) redisTemplate.opsForHash().get(KEY_PREFIX, token);
+    public Optional<String> findByToken(String token) {
+        var refreshToken = (String) redisTemplate.opsForHash().get(KEY_PREFIX, token);
         return Optional.ofNullable(refreshToken);
     }
 

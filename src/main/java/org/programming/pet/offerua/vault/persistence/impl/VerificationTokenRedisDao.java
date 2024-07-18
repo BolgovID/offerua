@@ -1,7 +1,6 @@
 package org.programming.pet.offerua.vault.persistence.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.programming.pet.offerua.vault.persistence.VerificationToken;
 import org.programming.pet.offerua.vault.persistence.VerificationTokenRepository;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -14,18 +13,18 @@ import java.util.Optional;
 public class VerificationTokenRedisDao implements VerificationTokenRepository {
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private static final String KEY_PREFIX = "redirectTo:verification:";
+    private static final String KEY_PREFIX = "token:verification:";
 
     @Override
-    public VerificationToken save(VerificationToken token, Duration ttl) {
-        redisTemplate.opsForHash().put(KEY_PREFIX, token.token(), token);
-        redisTemplate.expire(KEY_PREFIX + token.token(), ttl);
+    public String save(String token, Duration ttl) {
+        redisTemplate.opsForHash().put(KEY_PREFIX, token, token);
+        redisTemplate.expire(KEY_PREFIX + token, ttl);
         return token;
     }
 
     @Override
-    public Optional<VerificationToken> findByToken(String token) {
-        var verificationToken = (VerificationToken) redisTemplate.opsForHash().get(KEY_PREFIX, token);
+    public Optional<String> findByToken(String token) {
+        var verificationToken = (String) redisTemplate.opsForHash().get(KEY_PREFIX, token);
         return Optional.ofNullable(verificationToken);
     }
 

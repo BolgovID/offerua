@@ -2,10 +2,12 @@ package org.programming.pet.offerua.common.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.experimental.UtilityClass;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.Map;
 import java.util.function.Function;
 
 @UtilityClass
@@ -16,7 +18,24 @@ public class JwtUtils {
         return Date.from(expirationTime);
     }
 
-    public String extractUsername(String token, String secret) {
+    public String generateToken(
+            String subject,
+            Map<String, Object> claims,
+            String issuer,
+            Duration expireIn,
+            String secret
+    ) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuer(issuer)
+                .setIssuedAt(TimeUtils.currentDate())
+                .setExpiration(JwtUtils.calculateExpirationDate(expireIn))
+                .signWith(EncryptionUtils.signKeyHmac(secret), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String extractSubject(String token, String secret) {
         return extractClaim(token, secret, Claims::getSubject);
     }
 

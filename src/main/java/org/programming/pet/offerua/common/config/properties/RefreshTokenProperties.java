@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.vault.config.properties;
+package org.programming.pet.offerua.common.config.properties;
 
 import org.hibernate.validator.constraints.time.DurationMin;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,6 +10,9 @@ import java.time.Duration;
 @Validated
 public record RefreshTokenProperties(
         @DurationMin(seconds = 1)
-        Duration expiresIn
+        Duration expiresIn,
+        String issuer,
+        String secret
 ) {
+
 }

@@ -3,9 +3,11 @@ package org.programming.pet.offerua.security.service;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.programming.pet.offerua.common.exception.TokenExpiredException;
 import org.programming.pet.offerua.common.util.RequestUtils;
 import org.programming.pet.offerua.security.JwtResponseDto;
 import org.programming.pet.offerua.security.LogoutRequest;
+import org.programming.pet.offerua.security.exception.SecurityErrorCodes;
 import org.programming.pet.offerua.security.service.factory.AuthenticationTokenFactory;
 import org.programming.pet.offerua.vault.VaultInternalApi;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +20,8 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final AuthenticationTokenFactory authenticationTokenFactory;
-    private final JwtService jwtService;
+    private final AccessTokenService accessTokenService;
+    private final RefreshTokenService refreshTokenService;
     private final VaultInternalApi vaultInternalApi;
 
     public JwtResponseDto authenticate(String username, String password) {
@@ -28,8 +31,9 @@ public class AuthService {
         if (!authentication.isAuthenticated()) {
             throw new UsernameNotFoundException("Invalid userInfo request!");
         }
-        var refreshToken = vaultInternalApi.generateRefreshToken(username);
-        var accessToken = jwtService.generateToken(username);
+        var refreshToken = refreshTokenService.generateToken(username);
+        vaultInternalApi.pushRefreshToken(refreshToken);
+        var accessToken = accessTokenService.generateToken(username);
         log.info("User {} authenticated successfully", username);
 
         return JwtResponseDto.builder()
@@ -38,13 +42,17 @@ public class AuthService {
                 .build();
     }
 
-    public JwtResponseDto refreshToken(String refreshToken) {
-        var username = vaultInternalApi.popUsernameFromRefreshToken(refreshToken);
-        log.info("Creating new access and refresh tokens for {}", username);
+    public JwtResponseDto refreshToken(String tokenToRefresh) {
+        var refreshToken = vaultInternalApi.popRefreshToken(tokenToRefresh);
+        if (refreshTokenService.isTokenExpired(refreshToken)) {
+            throw new TokenExpiredException(SecurityErrorCodes.REFRESH_TOKEN_EXPIRED, refreshToken);
+        }
+        log.info("Creating new access and refresh tokens");
+        var username = refreshTokenService.extractUsername(refreshToken);
+        var accessToken = accessTokenService.generateToken(username);
+        var newRefreshToken = refreshTokenService.generateToken(refreshToken);
 
-
-        var accessToken = jwtService.generateToken(username);
-        var newRefreshToken = vaultInternalApi.generateRefreshToken(username);
+        vaultInternalApi.pushRefreshToken(newRefreshToken);
 
         return JwtResponseDto.builder()
                 .accessToken(accessToken)
@@ -53,10 +61,10 @@ public class AuthService {
     }
 
     public void logout(HttpServletRequest request, LogoutRequest logoutRequest) {
-        RequestUtils.extractTokenFromHeader(request)
-                .ifPresent(vaultInternalApi::addJwtToBlacklist);
-        var username = vaultInternalApi.popUsernameFromRefreshToken(logoutRequest.refreshToken());
-        log.info("User {} logged out successfully", username);
+        RequestUtils.extractTokenFromCookies(request)
+                .ifPresent(vaultInternalApi::pushJwtToBlacklist);
+        var token = vaultInternalApi.popRefreshToken(logoutRequest.refreshToken());
+        log.info("Access token {} added to blacklist", token);
     }
 
 }

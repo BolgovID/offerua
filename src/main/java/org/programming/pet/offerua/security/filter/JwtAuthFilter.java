@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.common.util.RequestUtils;
 import org.programming.pet.offerua.security.exception.JwtFilterException;
-import org.programming.pet.offerua.security.service.JwtService;
+import org.programming.pet.offerua.security.service.AccessTokenService;
 import org.programming.pet.offerua.security.service.UserDetailsServiceImpl;
 import org.programming.pet.offerua.security.service.factory.AuthenticationTokenFactory;
 import org.programming.pet.offerua.vault.VaultInternalApi;
@@ -24,7 +24,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
+    private final AccessTokenService accessTokenService;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final AuthenticationTokenFactory authenticationTokenFactory;
     private final VaultInternalApi vaultInternalApi;
@@ -44,10 +44,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             Optional.of(token)
                     .filter(vaultInternalApi::isJwtNotBlacklisted)
-                    .map(jwtService::extractUsername)
+                    .map(accessTokenService::extractUsername)
                     .filter(username -> isNotAuthenticated())
                     .map(userDetailsServiceImpl::loadUserByUsername)
-                    .filter(userDetails -> jwtService.validateToken(token, userDetails))
+                    .filter(userDetails -> accessTokenService.validateToken(token, userDetails))
                     .ifPresent(user -> authenticateUser(user, request));
         } catch (Exception e) {
             logger.error("Error while processing jwt redirectTo" + token, e);

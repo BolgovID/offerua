@@ -53,7 +53,9 @@ app:
         issuer: http://localhost:8080
         expiresIn: 60m
       refresh:
+        secret: ${refresh-secret}
         expiresIn: 7d
+        issuer: http://localhost:8080
       verification:
         expiresIn: 1d
       reset:

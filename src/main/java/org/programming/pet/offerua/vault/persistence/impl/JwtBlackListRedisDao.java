@@ -1,7 +1,7 @@
 package org.programming.pet.offerua.vault.persistence.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.programming.pet.offerua.common.config.properties.JwtProperties;
+import org.programming.pet.offerua.common.config.properties.AccessTokenProperties;
 import org.programming.pet.offerua.vault.persistence.JwtBlackListRepository;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -11,18 +11,18 @@ import java.time.Duration;
 
 @Repository
 @RequiredArgsConstructor
-@EnableConfigurationProperties(JwtProperties.class)
+@EnableConfigurationProperties(AccessTokenProperties.class)
 public class JwtBlackListRedisDao implements JwtBlackListRepository {
     private final RedisTemplate<String, Object> redisTemplate;
-    private final JwtProperties jwtProperties;
+    private final AccessTokenProperties accessTokenProperties;
 
-    private static final String KEY_PREFIX = "email:jwt:blacklist:";
+    private static final String KEY_PREFIX = "token:jwt:blacklist:";
 
     @Override
     public String save(String token, Duration ttl) {
         redisTemplate.opsForHash()
                 .put(KEY_PREFIX, token, token);
-        redisTemplate.expire(KEY_PREFIX + token, jwtProperties.expiresIn());
+        redisTemplate.expire(KEY_PREFIX + token, accessTokenProperties.expiresIn());
         return token;
     }
 

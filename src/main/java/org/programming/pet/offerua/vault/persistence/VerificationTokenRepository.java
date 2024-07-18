@@ -7,9 +7,9 @@ import java.util.Optional;
 
 @Service
 public interface VerificationTokenRepository {
-    VerificationToken save(VerificationToken token, Duration ttl);
+    String save(String token, Duration ttl);
 
-    Optional<VerificationToken> findByToken(String token);
+    Optional<String> findByToken(String token);
 
     void deleteToken(String token);
 }

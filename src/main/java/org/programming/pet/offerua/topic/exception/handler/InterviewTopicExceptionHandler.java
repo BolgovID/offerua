@@ -6,6 +6,8 @@ import org.programming.pet.offerua.common.util.ControllerAdviceUtils;
 import org.programming.pet.offerua.common.util.LoggerUtils;
 import org.programming.pet.offerua.topic.exception.InterviewTopicExistException;
 import org.programming.pet.offerua.topic.exception.InterviewTopicNotExistException;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Slf4j
 @ControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class InterviewTopicExceptionHandler {
 
     @ExceptionHandler(InterviewTopicNotExistException.class)

@@ -2,6 +2,7 @@ package org.programming.pet.offerua.users.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.programming.pet.offerua.common.exception.TokenExpiredException;
 import org.programming.pet.offerua.users.*;
 import org.programming.pet.offerua.users.exception.UserExistException;
 import org.programming.pet.offerua.users.exception.UserNotExistException;
@@ -20,11 +21,12 @@ import java.util.Optional;
 public class UsersFacade implements UsersInternalApi, UsersExternalApi {
     private final UserService userService;
     private final UserMapper userMapper;
-    private final TokenParameterEncoder tokenParameterEncoder;
     private final VaultInternalApi vaultInternalApi;
     private final UserEmailMessageFactory userEmailMessageFactory;
     private final VerificationEmailPublisher verificationEmailPublisher;
     private final ResetPasswordPublisher resetPasswordPublisher;
+    private final VerificationTokenService verificationTokenService;
+    private final ResetTokenService resetTokenService;
 
     @Override
     public Optional<UserAuthDto> getUserAuthInfoByUsername(String username) {
@@ -44,23 +46,26 @@ public class UsersFacade implements UsersInternalApi, UsersExternalApi {
         var userDto = userMapper.toDto(userRegisterForm);
         var userEntity = userService.registerUser(userDto, userRegisterForm.password());
 
-        var token = vaultInternalApi.generateVerificationToken(userDto.username());
-        var encodedToken = tokenParameterEncoder.encodeData(token);
+        var token = verificationTokenService.generateToken(userDto.username());
+        vaultInternalApi.pushVerificationToken(token);
 
         var emailMessage = userEmailMessageFactory.createVerificationMessage(
                 userEntity.getEmail(),
                 userEntity.getFirstName(),
                 frontEndUrl,
-                encodedToken
+                token
         );
         verificationEmailPublisher.send(emailMessage);
     }
 
     @Override
     @Transactional
-    public UserDto confirmRegistration(String encodedToken) {
-        var token = tokenParameterEncoder.decode(encodedToken);
-        var username = vaultInternalApi.popUsernameByVerificationToken(token);
+    public UserDto confirmRegistration(String token) {
+        var tokenFromVault = vaultInternalApi.popVerificationToken(token);
+        if (verificationTokenService.isTokenExpired(tokenFromVault)) {
+            throw new TokenExpiredException(UsersErrorCodes.VERIFICATION_TOKEN_EXPIRED, tokenFromVault);
+        }
+        var username = verificationTokenService.extractUsername(tokenFromVault);
 
         var userEntity = userService.findByUsername(username)
                 .orElseThrow(() -> new UserNotExistException(UsersErrorCodes.USERNAME_NOT_EXIST, username));
@@ -78,14 +83,15 @@ public class UsersFacade implements UsersInternalApi, UsersExternalApi {
             throw new UserNotExistException(UsersErrorCodes.USER_EMAIL_NOT_CONFIRMED, email);
         }
 
-        var token = vaultInternalApi.generateResetToken(email);
-        var encodedToken = tokenParameterEncoder.encodeData(token);
+        var token = resetTokenService.generateToken(email);
+
+        vaultInternalApi.pushResetToken(token);
 
         var emailMessage = userEmailMessageFactory.createResetPasswordMessage(
                 email,
                 userEntity.getFirstName(),
                 frontEndUrl,
-                encodedToken
+                token
         );
 
         resetPasswordPublisher.send(emailMessage);
@@ -94,8 +100,14 @@ public class UsersFacade implements UsersInternalApi, UsersExternalApi {
     @Override
     @Transactional
     public UserDto confirmReset(UserResetPasswordForm resetPasswordDto) {
-        var token = tokenParameterEncoder.decode(resetPasswordDto.token());
-        var email = vaultInternalApi.popUserEmailByResetToken(token);
+        var token = vaultInternalApi.popResetToken(resetPasswordDto.token());
+
+        if (resetTokenService.isTokenExpired(token)) {
+            throw new TokenExpiredException(UsersErrorCodes.RESET_TOKEN_EXPIRED, token);
+        }
+
+        var email = resetTokenService.extractEmail(token);
+
         var userEntity = userService.findByEmail(email)
                 .orElseThrow(() -> new UserNotExistException(UsersErrorCodes.USER_EMAIL_NOT_EXIST, email));
 

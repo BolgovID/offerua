@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.dto.ApiErrorResponse;
 import org.programming.pet.offerua.common.exception.AbstractException;
+import org.programming.pet.offerua.users.persistence.UserRoleName;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
@@ -15,8 +16,12 @@ import java.util.UUID;
 @Slf4j
 public class ControllerAdviceUtils {
 
-    public String prepareDetailMessageBasedOnRole(HttpServletRequest request, String exceptionMessage) {
-        if (isUserHasRoleAdmin(request)) {
+    public String prepareDetailMessageBasedOnRole(
+            HttpServletRequest request,
+            String exceptionMessage,
+            String secret
+    ) {
+        if (isUserHasRoleAdmin(request, secret)) {
             return exceptionMessage;
         } else {
             return "For details contact administrator.";
@@ -56,9 +61,21 @@ public class ControllerAdviceUtils {
                 .build();
     }
 
+    public static ApiErrorResponse mapToInternalErrorResponse(String message) {
+        return ApiErrorResponse.builder()
+                .id(UUID.randomUUID().toString())
+                .code("OUA-INT-001")
+                .message(message)
+                .errors(Collections.emptyMap())
+                .timestamp(TimeUtils.currentTime())
+                .build();
+    }
 
-    private boolean isUserHasRoleAdmin(HttpServletRequest request) {
-        var userFromRequest = RequestUtils.extractTokenFromCookies(request);
-        return userFromRequest.isPresent();/*&& userFromRequest.isAdmin())*/
+
+    private boolean isUserHasRoleAdmin(HttpServletRequest request, String secret) {
+        return RequestUtils.extractTokenFromCookies(request)
+                .map(token -> JwtUtils.extractSubject(token, secret))
+                .filter(UserRoleName.USER.name()::equals)
+                .isPresent();
     }
 }

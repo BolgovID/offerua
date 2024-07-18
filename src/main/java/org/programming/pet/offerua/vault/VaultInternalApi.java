@@ -1,19 +1,20 @@
 package org.programming.pet.offerua.vault;
 
 public interface VaultInternalApi {
-    String generateVerificationToken(String username);
 
-    String popUsernameByVerificationToken(String token);
+    void pushVerificationToken(String refreshToken);
 
-    String popUsernameFromRefreshToken(String refreshToken);
+    String popVerificationToken(String token);
 
-    String generateRefreshToken(String username);
+    String popRefreshToken(String refreshToken);
 
-    void addJwtToBlacklist(String jwt);
+    void pushJwtToBlacklist(String jwt);
 
     boolean isJwtNotBlacklisted(String token);
 
-    String generateResetToken(String email);
+    void pushResetToken(String resetToken);
 
-    String popUserEmailByResetToken(String token);
+    String popResetToken(String token);
+
+    void pushRefreshToken(String refreshToken);
 }

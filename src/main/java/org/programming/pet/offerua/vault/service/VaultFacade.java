@@ -4,73 +4,61 @@ import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.vault.VaultInternalApi;
 import org.programming.pet.offerua.vault.exception.TokenNotExistException;
 import org.programming.pet.offerua.vault.exception.VaultErrorCodes;
-import org.programming.pet.offerua.vault.persistence.RefreshToken;
-import org.programming.pet.offerua.vault.persistence.ResetToken;
-import org.programming.pet.offerua.vault.persistence.VerificationToken;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class VaultFacade implements VaultInternalApi {
-    private final VerificationTokenService verificationTokenService;
-    private final RefreshTokenService refreshTokenService;
+    private final VerificationTokenVaultService verificationTokenVaultService;
+    private final RefreshTokenVaultService refreshTokenVaultService;
     private final JwtBlackListService jwtBlackListService;
-    private final ResetTokenService resetTokenService;
+    private final ResetTokenVaultService resetTokenVaultService;
+
 
     @Override
-    public String generateVerificationToken(String username) {
-        return verificationTokenService.createToken(username)
-                .token();
+    public void pushRefreshToken(String refreshToken) {
+        refreshTokenVaultService.push(refreshToken);
     }
 
     @Override
-    public String generateRefreshToken(String username) {
-        return refreshTokenService.createToken(username)
-                .token();
-    }
+    public String popRefreshToken(String token) {
+        var usernameOpt = refreshTokenVaultService.findByToken(token);
 
-    @Override
-    public String generateResetToken(String email) {
-        return resetTokenService.createToken(email)
-                .token();
-    }
-
-    @Override
-    public String popUsernameByVerificationToken(String token) {
-        var usernameOpt = verificationTokenService.findByToken(token)
-                .map(verificationTokenService::verifyExpiration)
-                .map(VerificationToken::username);
-        usernameOpt
-                .ifPresent(username -> refreshTokenService.deleteToken(token));
-        return usernameOpt
-                .orElseThrow(() -> new TokenNotExistException(VaultErrorCodes.VERIFICATION_TOKEN_NOT_EXIST, token));
-    }
-
-    @Override
-    public String popUsernameFromRefreshToken(String token) {
-        var usernameOpt = refreshTokenService.findByToken(token)
-                .map(refreshTokenService::verifyExpiration)
-                .map(RefreshToken::username);
-        usernameOpt
-                .ifPresent(username -> refreshTokenService.deleteToken(token));
+        usernameOpt.ifPresent(username -> refreshTokenVaultService.deleteToken(token));
         return usernameOpt
                 .orElseThrow(() -> new TokenNotExistException(VaultErrorCodes.REFRESH_TOKEN_NOT_EXIST, token));
     }
 
     @Override
-    public String popUserEmailByResetToken(String token) {
-        var emailOpt = resetTokenService.findByToken(token)
-                .map(resetTokenService::verifyExpiration)
-                .map(ResetToken::email);
+    public void pushVerificationToken(String refreshToken) {
+        verificationTokenVaultService.push(refreshToken);
+    }
 
-        emailOpt.ifPresent(username -> refreshTokenService.deleteToken(token));
+    @Override
+    public String popVerificationToken(String token) {
+        var usernameOpt = verificationTokenVaultService.findByToken(token);
 
+        usernameOpt.ifPresent(username -> refreshTokenVaultService.deleteToken(token));
+        return usernameOpt
+                .orElseThrow(() -> new TokenNotExistException(VaultErrorCodes.VERIFICATION_TOKEN_NOT_EXIST, token));
+    }
+
+    @Override
+    public void pushResetToken(String resetToken) {
+        resetTokenVaultService.push(resetToken);
+    }
+
+    @Override
+    public String popResetToken(String token) {
+        var emailOpt = resetTokenVaultService.findByToken(token);
+
+        emailOpt.ifPresent(username -> refreshTokenVaultService.deleteToken(token));
         return emailOpt
                 .orElseThrow(() -> new TokenNotExistException(VaultErrorCodes.RESET_TOKEN_NOT_EXIST, token));
     }
 
     @Override
-    public void addJwtToBlacklist(String jwt) {
+    public void pushJwtToBlacklist(String jwt) {
         jwtBlackListService.addToBlacklist(jwt);
     }
 

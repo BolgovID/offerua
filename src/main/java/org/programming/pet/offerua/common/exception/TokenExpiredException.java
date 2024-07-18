@@ -1,7 +1,4 @@
-package org.programming.pet.offerua.vault.exception;
-
-import org.programming.pet.offerua.common.exception.AbstractException;
-import org.programming.pet.offerua.common.exception.ErrorCodes;
+package org.programming.pet.offerua.common.exception;
 
 public class TokenExpiredException extends AbstractException {
 

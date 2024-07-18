@@ -4,9 +4,9 @@ import java.time.Duration;
 import java.util.Optional;
 
 public interface ResetTokenRepository {
-    ResetToken save(ResetToken token, Duration ttl);
+    String save(String token, Duration ttl);
 
-    Optional<ResetToken> findByToken(String token);
+    Optional<String> findByToken(String token);
 
     void deleteToken(String token);
 }
