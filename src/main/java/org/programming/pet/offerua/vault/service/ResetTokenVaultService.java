@@ -26,9 +26,4 @@ public class ResetTokenVaultService {
         log.info("Reset token {} was saved. Saving...", token);
         return savedToken;
     }
-
-    public void delete(String token) {
-        resetTokenRepository.deleteToken(token);
-        log.info("Reset token {} was deleted. Saving...", token);
-    }
 }
