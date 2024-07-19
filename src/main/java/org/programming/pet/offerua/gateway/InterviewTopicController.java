@@ -11,24 +11,24 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/interview-topics")
 @RequiredArgsConstructor
 @Slf4j
 public class InterviewTopicController {
     private final InterviewTopicExternalApi interviewTopicExternalApi;
 
-    @PostMapping("/interview-topics")
+    @PostMapping
     public InterviewTopicDto createInterviewTopic(@RequestBody InterviewTopicUpdateRequest interviewTopic) {
         return interviewTopicExternalApi.createInterviewTopic(interviewTopic);
     }
 
-    @GetMapping("/interview-topics")
+    @GetMapping
     public List<InterviewTopicDto> getInterviewTopics() {
         return interviewTopicExternalApi.getAllInterviewTopics();
     }
 
-    @DeleteMapping("/interview-topics/{id}")
-    public void deleteInterviewTopic(@PathVariable UUID id) {
-        interviewTopicExternalApi.deleteInterviewTopic(id);
+    @DeleteMapping("/{topicId}")
+    public void deleteInterviewTopic(@PathVariable UUID topicId) {
+        interviewTopicExternalApi.deleteInterviewTopic(topicId);
     }
 }
