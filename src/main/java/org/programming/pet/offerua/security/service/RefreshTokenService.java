@@ -22,8 +22,7 @@ public class RefreshTokenService {
     }
 
     public boolean isTokenExpired(String token) {
-        return JwtUtils.extractExpiration(token, refreshTokenProperties.secret())
-                .before(TimeUtils.currentDate());
+        return JwtUtils.extractExpiration(token, refreshTokenProperties.secret()).before(TimeUtils.currentDate());
     }
 
     public String extractUsername(String token) {

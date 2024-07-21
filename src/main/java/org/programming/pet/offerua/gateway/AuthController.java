@@ -1,15 +1,13 @@
 package org.programming.pet.offerua.gateway;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.programming.pet.offerua.security.*;
+import org.programming.pet.offerua.security.AuthRequest;
+import org.programming.pet.offerua.security.JwtResponseDto;
+import org.programming.pet.offerua.security.SecurityExternalApi;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,15 +23,19 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public JwtResponseDto refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest, HttpServletResponse servletResponse) {
-        log.info("Received POST /refresh-token with {}", refreshTokenRequest);
-        return securityExternalApi.refreshToken(refreshTokenRequest.token(), servletResponse);
+    public JwtResponseDto refreshToken(@CookieValue("refresh_token") String refreshToken, HttpServletResponse servletResponse) {
+        log.info("Received POST /refresh-token");
+        return securityExternalApi.refreshToken(refreshToken, servletResponse);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest servletRequest, @RequestBody LogoutRequest logoutRequest) {
+    public ResponseEntity<String> logout(
+            @CookieValue("access_token") String accessToken,
+            @CookieValue("refresh_token") String refreshToken,
+            HttpServletResponse servletResponse
+    ) {
         log.info("Received POST /logout");
-        securityExternalApi.logout(servletRequest, logoutRequest);
+        securityExternalApi.logout(servletResponse, accessToken, refreshToken);
         return ResponseEntity.ok("Logged out successfully");
     }
 }

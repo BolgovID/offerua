@@ -1,12 +1,9 @@
 package org.programming.pet.offerua.security.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.exception.TokenExpiredException;
-import org.programming.pet.offerua.common.util.RequestUtils;
 import org.programming.pet.offerua.security.JwtResponseDto;
-import org.programming.pet.offerua.security.LogoutRequest;
 import org.programming.pet.offerua.security.exception.SecurityErrorCodes;
 import org.programming.pet.offerua.security.service.factory.AuthenticationTokenFactory;
 import org.programming.pet.offerua.vault.VaultInternalApi;
@@ -49,8 +46,9 @@ public class AuthService {
         }
         log.info("Creating new access and refresh tokens");
         var username = refreshTokenService.extractUsername(refreshToken);
+
         var accessToken = accessTokenService.generateToken(username);
-        var newRefreshToken = refreshTokenService.generateToken(refreshToken);
+        var newRefreshToken = refreshTokenService.generateToken(username);
 
         vaultInternalApi.pushRefreshToken(newRefreshToken);
 
@@ -60,11 +58,11 @@ public class AuthService {
                 .build();
     }
 
-    public void logout(HttpServletRequest request, LogoutRequest logoutRequest) {
-        RequestUtils.extractTokenFromCookies(request)
-                .ifPresent(vaultInternalApi::pushJwtToBlacklist);
-        var token = vaultInternalApi.popRefreshToken(logoutRequest.refreshToken());
-        log.info("Access token {} added to blacklist", token);
+    public void invalidateTokens(String accessToken, String refreshToken) {
+        vaultInternalApi.pushJwtToBlacklist(accessToken);
+        var deletedRefreshToken = vaultInternalApi.popRefreshToken(refreshToken);
+
+        log.info("Refresh token {}  was deleted, and access token {} was blacklisted", deletedRefreshToken, accessToken);
     }
 
 }
