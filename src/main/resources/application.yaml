@@ -40,7 +40,7 @@ spring:
           initial-interval: 3s
           max-attempts: 6
           max-interval: 20s
-          multiplier: 2
+          multiplier: 2.7
 
 server:
   error:

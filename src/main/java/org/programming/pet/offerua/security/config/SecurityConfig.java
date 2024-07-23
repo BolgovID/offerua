@@ -37,7 +37,8 @@ public class SecurityConfig {
     private static final String[] WHITE_LIST_API = {
             "/api/v1/users/register",
             "/api/v1/users/reset-password",
-            "/swagger-ui/index.html"
+            "/swagger-ui/index.html",
+            "/**"
     };
 
     private static final String[] AUTH_WHITELIST = {

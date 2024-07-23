@@ -18,7 +18,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class ControllerLoggingAspect {
     private final ObjectMapper objectMapper;
 
-    @Around("within(org.programming.pet.offerua..controller..*) && !within(org.programming.pet.offerua..AuthController)")
+    @Around("within(org.programming.pet.offerua.gateway..*) && !within(org.programming.pet.offerua..AuthController)")
     public Object logControllersRequestAndResponse(ProceedingJoinPoint joinPoint) throws Throwable {
 
         var request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();

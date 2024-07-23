@@ -27,7 +27,7 @@ public class QuestionController {
         return questionsExternalApi.findAllQuestionRelatedToLanguage(topicId, questionPaginationRequest);
     }
 
-    @GetMapping("/{questionId}")
+    @GetMapping("/{questionId}/answers")
     public QuestionWithAnswersDto getQuestionWithAnswers(@PathVariable UUID questionId, AnswerFilter paginationRequest) {
         return questionsExternalApi.findAllAnswersByQuestionId(questionId, paginationRequest);
     }

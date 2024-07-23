@@ -5,12 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
+import java.io.Serializable;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PageResponse<T> {
+public class PageResponse<T extends Serializable> implements Serializable {
     private int size;
     private long totalElements;
     private int totalPages;

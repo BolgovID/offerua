@@ -1,5 +1,6 @@
 package org.programming.pet.offerua.question;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 public record QuestionDto(
@@ -7,5 +8,5 @@ public record QuestionDto(
         String question,
         Double probability,
         String subTopic
-) {
+) implements Serializable {
 }

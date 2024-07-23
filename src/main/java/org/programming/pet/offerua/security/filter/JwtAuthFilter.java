@@ -50,7 +50,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     .filter(userDetails -> accessTokenService.validateToken(token, userDetails))
                     .ifPresent(user -> authenticateUser(user, request));
         } catch (Exception e) {
-            logger.error("Error while processing jwt redirectTo" + token, e);
+            logger.error("Error while processing access token" + token, e);
             throw new JwtFilterException(e);
         }
     }
@@ -59,7 +59,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (IOException | ServletException e) {
-            logger.error("Error while processing proceed jwt filtering in " + this.getClass(), e);
+            logger.error("Error while processing proceed access filtering in " + this.getClass(), e);
             throw new JwtFilterException(e);
         }
     }
