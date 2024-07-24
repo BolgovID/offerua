@@ -1,5 +1,6 @@
 package org.programming.pet.offerua.common.util;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -8,25 +9,24 @@ import org.programming.pet.offerua.common.exception.AbstractException;
 import org.programming.pet.offerua.users.persistence.UserRoleName;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.util.WebUtils;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
 @UtilityClass
 @Slf4j
 public class ControllerAdviceUtils {
+    private static final String ACCESS_TOKEN = "access_token";
+    private static final String DEFAULT_INTERNAL_ERROR_MESSAGE = "For details contact administrator.";
 
     public String prepareDetailMessageBasedOnRole(
             HttpServletRequest request,
             String exceptionMessage,
             String secret
     ) {
-        if (isUserHasRoleAdmin(request, secret)) {
-            return exceptionMessage;
-        } else {
-            return "For details contact administrator.";
-        }
-
+        return isUserHasRoleAdmin(request, secret) ? exceptionMessage : DEFAULT_INTERNAL_ERROR_MESSAGE;
     }
 
     public ApiErrorResponse mapToErrorResponse(AbstractException exception) {
@@ -71,9 +71,9 @@ public class ControllerAdviceUtils {
                 .build();
     }
 
-
     private boolean isUserHasRoleAdmin(HttpServletRequest request, String secret) {
-        return RequestUtils.extractTokenFromCookies(request)
+        return Optional.ofNullable(WebUtils.getCookie(request, ACCESS_TOKEN))
+                .map(Cookie::getValue)
                 .map(token -> JwtUtils.extractSubject(token, secret))
                 .filter(UserRoleName.USER.name()::equals)
                 .isPresent();

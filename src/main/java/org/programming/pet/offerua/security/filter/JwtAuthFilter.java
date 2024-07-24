@@ -3,10 +3,10 @@ package org.programming.pet.offerua.security.filter;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.programming.pet.offerua.common.util.RequestUtils;
 import org.programming.pet.offerua.security.exception.JwtFilterException;
 import org.programming.pet.offerua.security.service.AccessTokenService;
 import org.programming.pet.offerua.security.service.UserDetailsServiceImpl;
@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -29,13 +30,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final AuthenticationTokenFactory authenticationTokenFactory;
     private final VaultInternalApi vaultInternalApi;
 
+    public static final String ACCESS_TOKEN = "access_token";
+
     @Override
     protected void doFilterInternal(
             @Nonnull HttpServletRequest request,
             @Nonnull HttpServletResponse response,
             @Nonnull FilterChain filterChain
     ) {
-        RequestUtils.extractTokenFromCookies(request)
+        Optional.ofNullable(WebUtils.getCookie(request, ACCESS_TOKEN))
+                .map(Cookie::getValue)
                 .ifPresent(token -> processToken(token, request));
         proceedFilterChain(request, response, filterChain);
     }

@@ -38,10 +38,9 @@ public class SecurityConfig {
             "/api/v1/users/register",
             "/api/v1/users/reset-password",
             "/swagger-ui/index.html",
-            "/**"
     };
 
-    private static final String[] AUTH_WHITELIST = {
+    private static final String[] SWAGGER_AUTH_WHITELIST = {
             "/v3/api-docs/**",
             "/swagger-ui/**"
     };
@@ -94,6 +93,6 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web -> web.ignoring().requestMatchers(AUTH_WHITELIST));
+        return (web -> web.ignoring().requestMatchers(SWAGGER_AUTH_WHITELIST));
     }
 }
