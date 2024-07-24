@@ -55,6 +55,7 @@ public class UserService {
         return userRepository.save(userEntity);
     }
 
+
     public boolean existByUsername(String username) {
         return userRepository.findByUsername(username)
                 .isPresent();

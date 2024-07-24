@@ -74,6 +74,7 @@ public class UsersFacade implements UsersInternalApi, UsersExternalApi {
         return userMapper.toDto(savedUser);
     }
 
+
     @Override
     public void requestToResetPassword(String frontEndUrl, String email) {
         var userEntity = userService.findByEmail(email)

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.topic.InterviewTopicDto;
 import org.programming.pet.offerua.topic.InterviewTopicExternalApi;
 import org.programming.pet.offerua.topic.InterviewTopicUpdateRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +29,8 @@ public class InterviewTopicController {
     }
 
     @DeleteMapping("/{topicId}")
-    public void deleteInterviewTopic(@PathVariable UUID topicId) {
-        interviewTopicExternalApi.deleteInterviewTopic(topicId);
+    @ResponseStatus(HttpStatus.OK)
+    public InterviewTopicDto deleteInterviewTopic(@PathVariable UUID topicId) {
+        return interviewTopicExternalApi.deleteInterviewTopic(topicId);
     }
 }

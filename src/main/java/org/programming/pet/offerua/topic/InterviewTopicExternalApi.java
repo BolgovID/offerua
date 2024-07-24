@@ -8,5 +8,5 @@ public interface InterviewTopicExternalApi {
 
     List<InterviewTopicDto> getAllInterviewTopics();
 
-    void deleteInterviewTopic(UUID id);
+    InterviewTopicDto deleteInterviewTopic(UUID id);
 }

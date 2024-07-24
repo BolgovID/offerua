@@ -13,6 +13,7 @@ import org.programming.pet.offerua.question.QuestionsExternalApi;
 import org.programming.pet.offerua.question.exception.QuestionErrorCodes;
 import org.programming.pet.offerua.question.exception.QuestionNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -31,6 +32,7 @@ public class QuestionFacade implements QuestionsExternalApi {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public QuestionWithAnswersDto findAllAnswersByQuestionId(UUID questionId, AnswerFilter paginationRequest) {
         log.info("Search for answers per question by question id: {}", questionId);
         var answers = answersInternalApi.findAnswersByQuestionId(questionId, paginationRequest);
