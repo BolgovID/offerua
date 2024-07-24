@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.programming.pet.offerua.common.dto.ApiErrorResponse;
 import org.programming.pet.offerua.common.exception.TokenExpiredException;
-import org.programming.pet.offerua.common.util.ControllerAdviceUtils;
+import org.programming.pet.offerua.common.util.ErrorResponseUtils;
 import org.programming.pet.offerua.common.util.LoggerUtils;
 import org.programming.pet.offerua.users.exception.UserExistException;
 import org.programming.pet.offerua.users.exception.UserNotExistException;
@@ -46,7 +46,7 @@ public class UsersErrorHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(value = AccessDeniedException.class)
     protected ApiErrorResponse handleAccessDeniedException(AccessDeniedException ex) {
-        var response = ControllerAdviceUtils.mapToErrorResponse(ACCESS_DENIED_ERROR_CODE, ex);
+        var response = ErrorResponseUtils.mapToErrorResponse(ACCESS_DENIED_ERROR_CODE, ex);
         LoggerUtils.logAdviceError(response.id(), ex);
         return response;
     }
@@ -58,7 +58,7 @@ public class UsersErrorHandler extends ResponseEntityExceptionHandler {
             @Nonnull HttpStatusCode status,
             @Nonnull WebRequest request
     ) {
-        var responseBody = ControllerAdviceUtils.mapToErrorResponse(VALIDATION_ERROR_CODE, ex);
+        var responseBody = ErrorResponseUtils.mapToErrorResponse(VALIDATION_ERROR_CODE, ex);
         return new ResponseEntity<>(responseBody, headers, status);
     }
 
@@ -66,7 +66,7 @@ public class UsersErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserExistException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse handleUserExistException(UserExistException ex) {
-        var responseBody = ControllerAdviceUtils.mapToErrorResponse(ex);
+        var responseBody = ErrorResponseUtils.mapToErrorResponse(ex);
         LoggerUtils.logAdviceError(responseBody.id(), ex);
         return responseBody;
     }
@@ -75,7 +75,7 @@ public class UsersErrorHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiErrorResponse handleUserNotExistException(UserNotExistException ex) {
-        var responseBody = ControllerAdviceUtils.mapToErrorResponse(ex);
+        var responseBody = ErrorResponseUtils.mapToErrorResponse(ex);
         LoggerUtils.logAdviceError(responseBody.id(), ex);
         return responseBody;
     }
@@ -84,7 +84,7 @@ public class UsersErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(TokenExpiredException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiErrorResponse handleTokenExpiredException(TokenExpiredException exception) {
-        var errorResponse = ControllerAdviceUtils.mapToErrorResponse(exception);
+        var errorResponse = ErrorResponseUtils.mapToErrorResponse(exception);
         LoggerUtils.logAdviceError(errorResponse.id(), exception);
         return errorResponse;
     }

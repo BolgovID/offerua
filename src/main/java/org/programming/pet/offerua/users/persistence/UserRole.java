@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.UuidGenerator;
+import org.programming.pet.offerua.common.dto.UserRoleName;
 
 import java.io.Serializable;
 import java.util.UUID;

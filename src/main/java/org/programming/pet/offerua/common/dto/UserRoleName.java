@@ -1,14 +1,12 @@
-package org.programming.pet.offerua.users.persistence;
+package org.programming.pet.offerua.common.dto;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum UserRoleName {
     USER("USER"),
     ADMIN("ADMIN");
-
     private final String name;
-
-    UserRoleName(String user) {
-        this.name = user;
-    }
 
     @Override
     public String toString() {

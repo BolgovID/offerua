@@ -1,7 +1,7 @@
 package org.programming.pet.offerua.question.service;
 
 import lombok.RequiredArgsConstructor;
-import org.programming.pet.offerua.common.config.CacheConstants;
+import org.programming.pet.offerua.common.dto.CacheConstants;
 import org.programming.pet.offerua.question.QuestionDto;
 import org.programming.pet.offerua.question.mapper.QuestionMapper;
 import org.programming.pet.offerua.question.persistence.QuestionRepository;

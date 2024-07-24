@@ -3,6 +3,7 @@ package org.programming.pet.offerua.gateway;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.programming.pet.offerua.common.dto.CookieConstants;
 import org.programming.pet.offerua.security.AuthRequest;
 import org.programming.pet.offerua.security.JwtResponseDto;
 import org.programming.pet.offerua.security.SecurityExternalApi;
@@ -23,15 +24,18 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public JwtResponseDto refreshToken(@CookieValue("refresh_token") String refreshToken, HttpServletResponse servletResponse) {
+    public JwtResponseDto refreshToken(
+            @CookieValue(CookieConstants.REFRESH_TOKEN) String refreshToken,
+            HttpServletResponse servletResponse
+    ) {
         log.info("Received POST /refresh-token");
         return securityExternalApi.refreshToken(refreshToken, servletResponse);
     }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(
-            @CookieValue("access_token") String accessToken,
-            @CookieValue("refresh_token") String refreshToken,
+            @CookieValue(CookieConstants.ACCESS_TOKEN) String accessToken,
+            @CookieValue(CookieConstants.REFRESH_TOKEN) String refreshToken,
             HttpServletResponse servletResponse
     ) {
         log.info("Received POST /logout");

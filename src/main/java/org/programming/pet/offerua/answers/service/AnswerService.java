@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.answers.AnswerDto;
 import org.programming.pet.offerua.answers.mapper.AnswerMapper;
 import org.programming.pet.offerua.answers.persistence.AnswerRepository;
-import org.programming.pet.offerua.common.config.CacheConstants;
+import org.programming.pet.offerua.common.dto.CacheConstants;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;

@@ -1,7 +1,7 @@
 package org.programming.pet.offerua.topic.service;
 
 import lombok.RequiredArgsConstructor;
-import org.programming.pet.offerua.common.config.CacheConstants;
+import org.programming.pet.offerua.common.dto.CacheConstants;
 import org.programming.pet.offerua.topic.InterviewTopicDto;
 import org.programming.pet.offerua.topic.mapper.InterviewTopicMapper;
 import org.programming.pet.offerua.topic.persistence.InterviewTopicEntity;

@@ -1,4 +1,4 @@
-package org.programming.pet.offerua.common.config;
+package org.programming.pet.offerua.common.dto;
 
 import lombok.experimental.UtilityClass;
 

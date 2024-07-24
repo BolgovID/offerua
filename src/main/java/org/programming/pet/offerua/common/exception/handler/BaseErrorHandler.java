@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.config.properties.AccessTokenProperties;
 import org.programming.pet.offerua.common.dto.ApiErrorResponse;
-import org.programming.pet.offerua.common.util.ControllerAdviceUtils;
+import org.programming.pet.offerua.common.dto.UserRoleName;
+import org.programming.pet.offerua.common.service.CookieService;
+import org.programming.pet.offerua.common.util.ErrorResponseUtils;
+import org.programming.pet.offerua.common.util.JwtUtils;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -18,18 +21,32 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 @Slf4j
 @ResponseBody
-@Order(Ordered.LOWEST_PRECEDENCE)
+@Order(Ordered.LOWEST_PRECEDENCE) //should be there because of handlers priority
 @EnableConfigurationProperties(AccessTokenProperties.class)
 @RequiredArgsConstructor
 public class BaseErrorHandler {
     private final AccessTokenProperties accessTokenProperties;
+    private final CookieService cookieService;
+
+    private static final String DEFAULT_INTERNAL_ERROR_MESSAGE = "For details contact administrator.";
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiErrorResponse handleUnexpectedException(Exception ex, HttpServletRequest request) {
         log.warn("Unexpected internal server error: {}", ex.getMessage());
-        var message = ControllerAdviceUtils.prepareDetailMessageBasedOnRole(request, ex.getLocalizedMessage(), accessTokenProperties.secret());
-        return ControllerAdviceUtils.mapToInternalErrorResponse(message);
+        var message = prepareDetailMessageBasedOnRole(request, ex.getLocalizedMessage());
+        return ErrorResponseUtils.mapToInternalErrorResponse(message);
+    }
+
+    private String prepareDetailMessageBasedOnRole(
+            HttpServletRequest request,
+            String exceptionMessage
+    ) {
+        return cookieService.getAuthToken(request)
+                .map(token -> JwtUtils.extractUserRole(token, accessTokenProperties.secret()))
+                .filter(role -> role.equals(UserRoleName.ADMIN.name()))
+                .map(role -> exceptionMessage)
+                .orElse(DEFAULT_INTERNAL_ERROR_MESSAGE);
     }
 }

@@ -1,5 +1,6 @@
 package org.programming.pet.offerua.users.persistence;
 
+import org.programming.pet.offerua.common.dto.UserRoleName;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

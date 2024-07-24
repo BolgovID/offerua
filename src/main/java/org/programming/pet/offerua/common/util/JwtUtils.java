@@ -48,6 +48,10 @@ public class JwtUtils {
         return claimsResolver.apply(claims);
     }
 
+    public static String extractUserRole(String token, String secret) {
+        return extractClaim(token, secret, claims -> claims.get("role", String.class));
+    }
+
     private Claims extractAllClaims(String token, String secret) {
         return Jwts.parserBuilder()
                 .setSigningKey(EncryptionUtils.signKeyHmac(secret))

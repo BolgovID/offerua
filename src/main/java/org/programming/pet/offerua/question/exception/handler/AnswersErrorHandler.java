@@ -2,7 +2,7 @@ package org.programming.pet.offerua.question.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.dto.ApiErrorResponse;
-import org.programming.pet.offerua.common.util.ControllerAdviceUtils;
+import org.programming.pet.offerua.common.util.ErrorResponseUtils;
 import org.programming.pet.offerua.common.util.LoggerUtils;
 import org.programming.pet.offerua.question.exception.QuestionNotFoundException;
 import org.springframework.core.Ordered;
@@ -22,7 +22,7 @@ public class AnswersErrorHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiErrorResponse handleQuestionNotFoundException(QuestionNotFoundException exception) {
-        var errorResponse = ControllerAdviceUtils.mapToErrorResponse(exception);
+        var errorResponse = ErrorResponseUtils.mapToErrorResponse(exception);
         LoggerUtils.logAdviceError(errorResponse.id(), exception);
         return errorResponse;
     }

@@ -2,7 +2,7 @@ package org.programming.pet.offerua.vault.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.dto.ApiErrorResponse;
-import org.programming.pet.offerua.common.util.ControllerAdviceUtils;
+import org.programming.pet.offerua.common.util.ErrorResponseUtils;
 import org.programming.pet.offerua.vault.exception.TokenNotExistException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -21,7 +21,7 @@ public class VaultExceptionHandler {
     @ExceptionHandler(TokenNotExistException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiErrorResponse handleTokenNotExistException(TokenNotExistException exception) {
-        return ControllerAdviceUtils.mapToErrorResponse(exception);
+        return ErrorResponseUtils.mapToErrorResponse(exception);
     }
 
 }

@@ -1,6 +1,7 @@
 package org.programming.pet.offerua.users.service;
 
 import lombok.RequiredArgsConstructor;
+import org.programming.pet.offerua.common.dto.UserRoleName;
 import org.programming.pet.offerua.users.UserDto;
 import org.programming.pet.offerua.users.mapper.UserMapper;
 import org.programming.pet.offerua.users.persistence.*;

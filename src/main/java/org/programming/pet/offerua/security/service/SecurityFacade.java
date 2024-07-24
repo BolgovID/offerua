@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.security.JwtResponseDto;
 import org.programming.pet.offerua.security.SecurityExternalApi;
-import org.programming.pet.offerua.security.service.factory.AuthCookieService;
+import org.programming.pet.offerua.common.service.CookieService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class SecurityFacade implements SecurityExternalApi {
-    private final AuthCookieService cookieService;
+    private final CookieService cookieService;
     private final AuthService authService;
 
     @Override
