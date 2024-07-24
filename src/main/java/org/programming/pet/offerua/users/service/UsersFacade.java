@@ -36,7 +36,7 @@ public class UsersFacade implements UsersInternalApi, UsersExternalApi {
 
     @Override
     @Transactional
-    public void requestToRegister(String frontEndUrl, UserRegisterForm userRegisterForm) {
+    public void requestToRegister(UserRegisterForm userRegisterForm) {
         if (userService.existByEmail(userRegisterForm.email())) {
             throw new UserExistException(UsersErrorCodes.USER_EMAIL_NOT_UNIQUE, userRegisterForm.email());
         }
@@ -52,7 +52,6 @@ public class UsersFacade implements UsersInternalApi, UsersExternalApi {
         var emailMessage = userEmailMessageFactory.createVerificationMessage(
                 userEntity.getEmail(),
                 userEntity.getFirstName(),
-                frontEndUrl,
                 token
         );
         verificationEmailPublisher.send(emailMessage);
@@ -76,7 +75,7 @@ public class UsersFacade implements UsersInternalApi, UsersExternalApi {
 
 
     @Override
-    public void requestToResetPassword(String frontEndUrl, String email) {
+    public void requestToResetPassword(String email) {
         var userEntity = userService.findByEmail(email)
                 .orElseThrow(() -> new UserNotExistException(UsersErrorCodes.USER_EMAIL_NOT_EXIST, email));
 
@@ -91,7 +90,6 @@ public class UsersFacade implements UsersInternalApi, UsersExternalApi {
         var emailMessage = userEmailMessageFactory.createResetPasswordMessage(
                 email,
                 userEntity.getFirstName(),
-                frontEndUrl,
                 token
         );
 

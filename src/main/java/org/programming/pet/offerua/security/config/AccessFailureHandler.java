@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.util.ErrorResponseUtils;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,18 +16,17 @@ import java.io.IOException;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class AuthUnauthorizedHandler implements AuthenticationEntryPoint {
+public class AccessFailureHandler implements AccessDeniedHandler {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        log.error("Unauthorized error: {}", authException.getMessage());
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
+        log.warn("Unauthorized error: Invalid username or password");
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        var apiResponse = ErrorResponseUtils.mapToUnauthorizedResponse(authException.getMessage());
-
+        var apiResponse = ErrorResponseUtils.mapToUnauthorizedResponse("Invalid username or password");
         objectMapper.writeValue(response.getOutputStream(), apiResponse);
     }
 }

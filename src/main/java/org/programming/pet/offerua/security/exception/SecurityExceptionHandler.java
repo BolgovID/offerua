@@ -8,6 +8,7 @@ import org.programming.pet.offerua.common.util.LoggerUtils;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,6 +23,15 @@ public class SecurityExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiErrorResponse handleTokenExpiredException(TokenExpiredException exception) {
         var errorResponse = ErrorResponseUtils.mapToErrorResponse(exception);
+        LoggerUtils.logAdviceError(errorResponse.id(), exception);
+        return errorResponse;
+    }
+
+    @ResponseBody
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiErrorResponse handleBadCredentialsException(BadCredentialsException exception) {
+        var errorResponse = ErrorResponseUtils.mapToUnauthorizedResponse(exception.getLocalizedMessage());
         LoggerUtils.logAdviceError(errorResponse.id(), exception);
         return errorResponse;
     }

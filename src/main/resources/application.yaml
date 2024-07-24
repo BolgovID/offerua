@@ -60,6 +60,10 @@ app:
         expiresIn: 1d
       reset:
         expiresIn: 1d
+  front-end:
+    base-url: http://localhost:4200
+    verificationPath: /auth/verify?data=
+    restorePath: /auth/restore?data=
 
 logging:
   pattern:

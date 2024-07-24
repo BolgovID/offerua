@@ -6,7 +6,6 @@ import org.programming.pet.offerua.common.dto.ApiErrorResponse;
 import org.programming.pet.offerua.common.exception.AbstractException;
 import org.programming.pet.offerua.common.exception.GlobalErrorCodes;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.Collections;
@@ -58,11 +57,11 @@ public class ErrorResponseUtils {
                 .build();
     }
 
-    public ApiErrorResponse mapToUnauthorizedResponse(AuthenticationException authException) {
+    public ApiErrorResponse mapToUnauthorizedResponse(String message) {
         return ApiErrorResponse.builder()
                 .id(UUID.randomUUID().toString())
                 .code(GlobalErrorCodes.UNAUTHORIZED_ERROR.getCode())
-                .message(authException.getMessage())
+                .message(message)
                 .timestamp(TimeUtils.currentTime())
                 .errors(Collections.emptyMap())
                 .build();
