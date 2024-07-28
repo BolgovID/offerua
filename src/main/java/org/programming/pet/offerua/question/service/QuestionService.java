@@ -21,7 +21,7 @@ public class QuestionService {
     private final QuestionMapper questionMapper;
     private final QuestionRepository questionRepository;
 
-    public Page<QuestionDto> findByTopicId(UUID topicId, Pageable pageable) {
+    public Page<QuestionDto> questionCountByTopicId(UUID topicId, Pageable pageable) {
         return questionRepository.findByInterviewTopicId(topicId, pageable)
                 .map(questionMapper::toDto);
     }
@@ -30,5 +30,9 @@ public class QuestionService {
     public Optional<QuestionDto> findById(UUID questionId) {
         return questionRepository.findById(questionId)
                 .map(questionMapper::toDto);
+    }
+
+    public long questionCountByTopicId(UUID topicId) {
+        return questionRepository.countByInterviewTopicId(topicId);
     }
 }

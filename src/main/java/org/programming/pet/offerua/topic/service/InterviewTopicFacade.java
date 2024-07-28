@@ -1,9 +1,11 @@
 package org.programming.pet.offerua.topic.service;
 
 import lombok.RequiredArgsConstructor;
+import org.programming.pet.offerua.question.QuestionsInternalApi;
 import org.programming.pet.offerua.topic.InterviewTopicDto;
 import org.programming.pet.offerua.topic.InterviewTopicExternalApi;
 import org.programming.pet.offerua.topic.InterviewTopicUpdateRequest;
+import org.programming.pet.offerua.topic.TopicWithQuestionCountDto;
 import org.programming.pet.offerua.topic.exception.InterviewTopicExistException;
 import org.programming.pet.offerua.topic.exception.InterviewTopicNotExistException;
 import org.programming.pet.offerua.topic.exception.TopicErrorCodes;
@@ -12,11 +14,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class InterviewTopicFacade implements InterviewTopicExternalApi {
     private final InterviewTopicService topicService;
+    private final QuestionsInternalApi questionsInternalApi;
     private final InterviewTopicMapper interviewTopicMapper;
 
     @Override
@@ -33,8 +38,15 @@ public class InterviewTopicFacade implements InterviewTopicExternalApi {
     }
 
     @Override
-    public List<InterviewTopicDto> getAllInterviewTopics() {
-        return topicService.findAllTopics();
+    public List<TopicWithQuestionCountDto> getAllInterviewTopics() {
+        var topics = topicService.findAllTopics().stream()
+                .collect(Collectors.toMap(
+                        Function.identity(),
+                        topic -> questionsInternalApi.questionCount(topic.id())
+                ));
+        return topics.entrySet().stream()
+                .map(interviewTopicMapper::toTopicWithQuestionCountDto)
+                .toList();
     }
 
     @Override

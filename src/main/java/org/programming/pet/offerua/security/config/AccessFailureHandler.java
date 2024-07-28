@@ -1,6 +1,7 @@
 package org.programming.pet.offerua.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class AccessFailureHandler implements AccessDeniedHandler {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
+    public void handle(HttpServletRequest request, @Nonnull   HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         log.warn("Unauthorized error: Invalid username or password");
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

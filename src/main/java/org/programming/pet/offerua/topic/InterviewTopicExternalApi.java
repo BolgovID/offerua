@@ -6,7 +6,7 @@ import java.util.UUID;
 public interface InterviewTopicExternalApi {
     InterviewTopicDto createInterviewTopic(InterviewTopicUpdateRequest topicCreateRequest);
 
-    List<InterviewTopicDto> getAllInterviewTopics();
+    List<TopicWithQuestionCountDto> getAllInterviewTopics();
 
     InterviewTopicDto deleteInterviewTopic(UUID id);
 }

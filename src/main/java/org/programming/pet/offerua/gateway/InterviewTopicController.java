@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.topic.InterviewTopicDto;
 import org.programming.pet.offerua.topic.InterviewTopicExternalApi;
 import org.programming.pet.offerua.topic.InterviewTopicUpdateRequest;
+import org.programming.pet.offerua.topic.TopicWithQuestionCountDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class InterviewTopicController {
     }
 
     @GetMapping
-    public List<InterviewTopicDto> getInterviewTopics() {
+    public List<TopicWithQuestionCountDto> getInterviewTopics() {
         return interviewTopicExternalApi.getAllInterviewTopics();
     }
 

@@ -6,10 +6,7 @@ import org.programming.pet.offerua.answers.AnswerFilter;
 import org.programming.pet.offerua.answers.AnswersInternalApi;
 import org.programming.pet.offerua.common.dto.PageResponse;
 import org.programming.pet.offerua.common.util.PageableUtils;
-import org.programming.pet.offerua.question.QuestionDto;
-import org.programming.pet.offerua.question.QuestionFilter;
-import org.programming.pet.offerua.question.QuestionWithAnswersDto;
-import org.programming.pet.offerua.question.QuestionsExternalApi;
+import org.programming.pet.offerua.question.*;
 import org.programming.pet.offerua.question.exception.QuestionErrorCodes;
 import org.programming.pet.offerua.question.exception.QuestionNotFoundException;
 import org.springframework.stereotype.Service;
@@ -20,14 +17,14 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class QuestionFacade implements QuestionsExternalApi {
+public class QuestionsFacade implements QuestionsExternalApi, QuestionsInternalApi {
     private final QuestionService questionService;
     private final AnswersInternalApi answersInternalApi;
 
     @Override
     public PageResponse<QuestionDto> findAllQuestionRelatedToLanguage(UUID topicId, QuestionFilter questionFilterRequest) {
         var pageable = PageableUtils.getPageable(questionFilterRequest);
-        var questionDtoPage = questionService.findByTopicId(topicId, pageable);
+        var questionDtoPage = questionService.questionCountByTopicId(topicId, pageable);
         return new PageResponse<>(questionDtoPage);
     }
 
@@ -43,5 +40,10 @@ public class QuestionFacade implements QuestionsExternalApi {
                 .answers(answers)
                 .question(question)
                 .build();
+    }
+
+    @Override
+    public long questionCount(UUID topicId) {
+        return questionService.questionCountByTopicId(topicId);
     }
 }

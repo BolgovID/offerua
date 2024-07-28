@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface QuestionRepository extends JpaRepository<QuestionEntity, UUID> {
     Page<QuestionEntity> findByInterviewTopicId(UUID interviewTopicId, Pageable pageable);
+
+    long countByInterviewTopicId(UUID topicId);
 }
