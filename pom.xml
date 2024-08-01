@@ -93,6 +93,16 @@
             <artifactId>firebase-admin</artifactId>
             <version>${firebase.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>co.elastic.clients</groupId>-->
+<!--            <artifactId>elasticsearch-java</artifactId>-->
+<!--            <version>8.13.4</version>-->
+<!--        </dependency>-->
+
 
         <!--Utils-->
         <dependency>
@@ -165,6 +175,7 @@
             <artifactId>spring-modulith-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <dependencyManagement>

@@ -2,48 +2,36 @@ package org.programming.pet.offerua.question.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.programming.pet.offerua.answers.AnswerFilter;
-import org.programming.pet.offerua.answers.AnswersInternalApi;
-import org.programming.pet.offerua.common.dto.PageResponse;
-import org.programming.pet.offerua.common.util.PageableUtils;
-import org.programming.pet.offerua.question.*;
-import org.programming.pet.offerua.question.exception.QuestionErrorCodes;
-import org.programming.pet.offerua.question.exception.QuestionNotFoundException;
+import org.programming.pet.offerua.common.dto.PaginationRequest;
+import org.programming.pet.offerua.question.QuestionDto;
+import org.programming.pet.offerua.question.QuestionUpdateRequest;
+import org.programming.pet.offerua.question.QuestionsExternalApi;
+import org.programming.pet.offerua.question.QuestionsInternalApi;
+import org.programming.pet.offerua.topic.TopicDto;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import java.util.List;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class QuestionsFacade implements QuestionsExternalApi, QuestionsInternalApi {
-    private final QuestionService questionService;
-    private final AnswersInternalApi answersInternalApi;
+    private final QuestionsCommandService commandService;
+    private final QuestionsQueryService queryService;
 
     @Override
-    public PageResponse<QuestionDto> findAllQuestionRelatedToLanguage(UUID topicId, QuestionFilter questionFilterRequest) {
-        var pageable = PageableUtils.getPageable(questionFilterRequest);
-        var questionDtoPage = questionService.questionCountByTopicId(topicId, pageable);
-        return new PageResponse<>(questionDtoPage);
+    public Long countQuestionsByTopicList(List<TopicDto> topics) {
+        return queryService.countQuestionsByTopicIds(topics);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public QuestionWithAnswersDto findAllAnswersByQuestionId(UUID questionId, AnswerFilter paginationRequest) {
-        log.info("Search for answers per question by question id: {}", questionId);
-        var answers = answersInternalApi.findAnswersByQuestionId(questionId, paginationRequest);
-        var question = questionService.findById(questionId)
-                .orElseThrow(() -> new QuestionNotFoundException(QuestionErrorCodes.QUESTION_NOT_FOUND, questionId));
-
-        return QuestionWithAnswersDto.builder()
-                .answers(answers)
-                .question(question)
-                .build();
+    public Page<QuestionDto> findAllQuestionByTopicList(List<TopicDto> topics, PaginationRequest paginationRequest) {
+        return queryService.findAllQuestionByTopicList(topics, paginationRequest);
     }
 
     @Override
-    public long questionCount(UUID topicId) {
-        return questionService.questionCountByTopicId(topicId);
+    public QuestionDto createQuestion(QuestionUpdateRequest questionDto) {
+        return commandService.createQuestion(questionDto);
     }
 }

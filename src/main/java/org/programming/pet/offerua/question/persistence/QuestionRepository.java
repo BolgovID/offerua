@@ -5,11 +5,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.UUID;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<QuestionEntity, UUID> {
-    Page<QuestionEntity> findByInterviewTopicId(UUID interviewTopicId, Pageable pageable);
+    Page<QuestionEntity> findAllByTopicIdIn(Collection<UUID> topicIds, Pageable pageable);
 
-    long countByInterviewTopicId(UUID topicId);
+    Long countByTopicIdIn(Collection<UUID> topicIds);
 }

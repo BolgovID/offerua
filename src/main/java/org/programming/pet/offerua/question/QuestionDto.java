@@ -7,6 +7,6 @@ public record QuestionDto(
         UUID id,
         String question,
         Double probability,
-        String subTopic
+        String topic
 ) implements Serializable {
 }

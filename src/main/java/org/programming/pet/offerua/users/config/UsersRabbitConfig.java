@@ -1,6 +1,6 @@
 package org.programming.pet.offerua.users.config;
 
-import org.programming.pet.offerua.common.rabbit.RabbitConst;
+import org.programming.pet.offerua.common.dto.RabbitConst;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;

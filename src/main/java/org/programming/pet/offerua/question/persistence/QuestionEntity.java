@@ -24,8 +24,6 @@ public class QuestionEntity extends Auditable<String> implements Serializable {
     String question;
     @Column(name = "probability")
     Double probability;
-    @Column(name = "interview_topic_id")
-    UUID interviewTopicId;
-    @Column(name = "interview_subtopic_id")
-    UUID interviewSubtopicId;
+    @Column(name = "technology_topic_id")
+    UUID topicId;
 }

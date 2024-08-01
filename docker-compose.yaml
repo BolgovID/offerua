@@ -30,10 +30,20 @@ services:
       - "15672:15672"
 
   elasticsearch:
-    image: elasticsearch:8.8.0
-    ports:
-      - 9200:9200
-      - 9300:9300
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.3
+    container_name: elasticsearch-container
     environment:
       - discovery.type=single-node
-      - xpack.security.enabled=false
+      - cluster.name=product_index
+    ports:
+      - "9200:9200"
+
+
+#  spring-app:
+#    build: .
+#    depends_on:
+#      - redis
+#      - elasticsearch
+#    ports:
+#      - "8080:8080"
+#    command: "./wait-for-it.sh elasticsearch:9200 -- mvn spring-boot:run" //should wait till elastic start

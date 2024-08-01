@@ -3,7 +3,7 @@ package org.programming.pet.offerua.mailer.consumer;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.common.rabbit.AbstractMessageListener;
-import org.programming.pet.offerua.common.rabbit.RabbitConst;
+import org.programming.pet.offerua.common.dto.RabbitConst;
 import org.programming.pet.offerua.common.rabbit.message.EmailRedirectMessage;
 import org.programming.pet.offerua.mailer.consumer.handler.EmailVerificationHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
