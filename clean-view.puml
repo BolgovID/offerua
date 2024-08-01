@@ -1,0 +1,45 @@
+@startuml
+set separator none
+title OfferuaApplication with RabbitMQ and Redis
+
+top to bottom direction
+
+!include <C4/C4>
+!include <C4/C4_Context>
+!include <C4/C4_Component>
+
+Container_Boundary("OfferuaApplication.OfferuaApplication_boundary", "OfferuaApplication", $tags="") {
+  Component(OfferuaApplication.OfferuaApplication.Gateway, "Gateway", $techn="Module", $descr="Handles external requests and routes them to appropriate services")
+  Component(OfferuaApplication.OfferuaApplication.Vault, "Vault", $techn="Module", $descr="Manages tokens and secure data storage")
+  Component(OfferuaApplication.OfferuaApplication.Security, "Security", $techn="Module", $descr="Handles authentication and authorization")
+  Component(OfferuaApplication.OfferuaApplication.Question, "Question", $techn="Module", $descr="Manages questions and their data")
+  Component(OfferuaApplication.OfferuaApplication.Answers, "Answers", $techn="Module", $descr="Handles answers related to questions")
+  Component(OfferuaApplication.OfferuaApplication.Topic, "Topic", $techn="Module", $descr="Manages topics and related data")
+  Component(OfferuaApplication.OfferuaApplication.Mailer, "Mailer", $techn="Module", $descr="Handles sending emails for various notifications")
+  Component(OfferuaApplication.OfferuaApplication.Users, "Users", $techn="Module", $descr="Manages user data and interactions")
+  Component(OfferuaApplication.OfferuaApplication.RabbitMQ, "RabbitMQ", $techn="Module", $descr="Handles message brokering for asynchronous communication")
+  Component(OfferuaApplication.OfferuaApplication.Redis, "Redis", $techn="Module", $descr="Handles caching and token storage")
+}
+
+Rel(OfferuaApplication.OfferuaApplication.Answers, OfferuaApplication.OfferuaApplication.Question, "retrieves related questions", $descr="Answer module queries Question module for related questions")
+Rel(OfferuaApplication.OfferuaApplication.Gateway, OfferuaApplication.OfferuaApplication.Answers, "routes requests to", $descr="Gateway routes external requests to Answers module")
+Rel(OfferuaApplication.OfferuaApplication.Gateway, OfferuaApplication.OfferuaApplication.Security, "handles authentication through", $descr="Gateway uses Security module for authentication and authorization")
+Rel(OfferuaApplication.OfferuaApplication.Gateway, OfferuaApplication.OfferuaApplication.Topic, "routes requests to", $descr="Gateway routes external requests to Topic module")
+Rel(OfferuaApplication.OfferuaApplication.Gateway, OfferuaApplication.OfferuaApplication.Question, "routes requests to", $descr="Gateway routes external requests to Question module")
+Rel(OfferuaApplication.OfferuaApplication.Gateway, OfferuaApplication.OfferuaApplication.Vault, "accesses secure data from", $descr="Gateway retrieves secure data from Vault module")
+Rel(OfferuaApplication.OfferuaApplication.Gateway, OfferuaApplication.OfferuaApplication.Users, "routes user-related requests to", $descr="Gateway routes external requests to Users module")
+Rel(OfferuaApplication.OfferuaApplication.Security, OfferuaApplication.OfferuaApplication.Vault, "validates tokens with", $descr="Security module retrieves and validates tokens with Vault module")
+Rel(OfferuaApplication.OfferuaApplication.Security, OfferuaApplication.OfferuaApplication.Users, "authenticates user data", $descr="Security module handles user authentication for Users module")
+Rel(OfferuaApplication.OfferuaApplication.Users, OfferuaApplication.OfferuaApplication.Vault, "stores and retrieves secure data", $descr="Users module stores and retrieves user tokens and data from Vault module")
+
+Rel(OfferuaApplication.OfferuaApplication.Users, OfferuaApplication.OfferuaApplication.RabbitMQ, "publishes messages to", $descr="Users module publishes messages to RabbitMQ for Mailer module")
+Rel(OfferuaApplication.OfferuaApplication.Mailer, OfferuaApplication.OfferuaApplication.RabbitMQ, "consumes messages from", $descr="Mailer module consumes messages from RabbitMQ for processing email notifications")
+
+Rel(OfferuaApplication.OfferuaApplication.Vault, OfferuaApplication.OfferuaApplication.Redis, "retrieves tokens from", $descr="Vault module retrieves tokens from Redis")
+
+Component(OfferuaApplication.Common, "Common", $techn="Module", $descr="Shared common functionalities and utilities used by all modules")
+
+}
+
+SHOW_LEGEND(true)
+@enduml
