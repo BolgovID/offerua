@@ -4,7 +4,7 @@ spring:
   data:
     elasticsearch:
       cluster-nodes: localhost:9200
-      cluster-name: topic-index
+      cluster-name: question-index
   datasource:
     url: jdbc:postgresql://localhost:5433/offerua
     username: ${postgres-username}
@@ -55,7 +55,7 @@ app:
       jwt:
         secret: ${jwt-secret}
         issuer: http://localhost:8080
-        expiresIn: 60m
+        expiresIn: 15m
       refresh:
         secret: ${refresh-secret}
         expiresIn: 7d

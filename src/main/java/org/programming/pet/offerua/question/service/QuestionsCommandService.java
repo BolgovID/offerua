@@ -6,6 +6,7 @@ import org.programming.pet.offerua.question.QuestionDto;
 import org.programming.pet.offerua.question.QuestionUpdateRequest;
 import org.programming.pet.offerua.question.mapper.QuestionMapper;
 import org.programming.pet.offerua.question.service.domain.QuestionService;
+import org.programming.pet.offerua.search.SearchInternalApi;
 import org.programming.pet.offerua.topic.TopicInternalApi;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,13 +19,17 @@ public class QuestionsCommandService {
     private final QuestionService questionService;
     private final QuestionMapper questionMapper;
     private final TopicInternalApi topicInternalApi;
+    private final SearchInternalApi searchInternalApi;
 
-    public QuestionDto createQuestion(QuestionUpdateRequest questionDto) {
-        log.info("Creating question: {}", questionDto);
-        var topic = topicInternalApi.findById(questionDto.topicId());
+    public QuestionDto createQuestion(QuestionUpdateRequest questionUpdateRequest) {
+        log.info("Creating question: {}", questionUpdateRequest);
+        var topic = topicInternalApi.findById(questionUpdateRequest.topicId());
 
-        var questionEntity = questionMapper.toEntity(questionDto);
+        var questionEntity = questionMapper.toEntity(questionUpdateRequest);
         var savedQuestion = questionService.save(questionEntity);
-        return questionMapper.toDto(savedQuestion, topic.name());
+        var questionDto = questionMapper.toDto(savedQuestion, topic.name());
+
+        searchInternalApi.indexQuestion(questionDto);
+        return questionDto;
     }
 }
