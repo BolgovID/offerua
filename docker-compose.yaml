@@ -2,14 +2,16 @@ version: '3.7'
 services:
   postgres-offerua:
     container_name: postgres-offerua
-    image: postgres:16
+    build:
+      context: ./postgres/
+      dockerfile: Dockerfile
     environment:
       POSTGRES_DB: offerua
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      PGDATA: /data/postgres
+      POSTGRES_PORT: 5432
     volumes:
-      - ./postgres-offerua:/data/postgres
+      - postgresvolume:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     restart: unless-stopped
@@ -17,5 +19,61 @@ services:
   redis-token-store:
     image: redis
     ports:
-        - "6379:6379"
+      - "6379:6379"
     restart: unless-stopped
+
+  rabbit-mq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: username
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.3
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - cluster.name=idx_question
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticvolume:/usr/share/elasticsearch/data
+
+  logstash:
+    container_name: logstash
+    build:
+      context: ./logstash/
+      dockerfile: Dockerfile
+    ports:
+      - "9600:9600"
+    environment:
+      - CONFIG_SUPPORT_ESCAPE=true
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+      - postgres-offerua
+    volumes:
+      - logstashvolume:/usr/share/logstash/data
+
+volumes:
+  postgresvolume:
+  elasticvolume:
+  logstashvolume:
+
+
+
+#  spring-app:
+#    build: .
+#    depends_on:
+#      - redis
+#      - elasticsearch
+#    ports:
+#      - "8080:8080"
+#    command: "./wait-for-it.sh elasticsearch:9200 -- mvn spring-boot:run" //should wait till elastic start

@@ -6,12 +6,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.programming.pet.offerua.common.util.RequestUtils;
-import org.programming.pet.offerua.security.exception.WebFilterException;
-import org.programming.pet.offerua.security.repositories.TokenBlacklist;
-import org.programming.pet.offerua.security.service.JwtService;
+import org.programming.pet.offerua.security.exception.JwtFilterException;
+import org.programming.pet.offerua.security.service.AccessTokenService;
 import org.programming.pet.offerua.security.service.UserDetailsServiceImpl;
+import org.programming.pet.offerua.common.service.CookieService;
 import org.programming.pet.offerua.security.service.factory.AuthenticationTokenFactory;
+import org.programming.pet.offerua.vault.VaultInternalApi;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,10 +24,11 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
+    private final AccessTokenService accessTokenService;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final AuthenticationTokenFactory authenticationTokenFactory;
-    private final TokenBlacklist tokenBlacklist;
+    private final VaultInternalApi vaultInternalApi;
+    private final CookieService cookieService;
 
     @Override
     protected void doFilterInternal(
@@ -35,27 +36,32 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @Nonnull HttpServletResponse response,
             @Nonnull FilterChain filterChain
     ) {
-        RequestUtils.extractTokenFromHeader(request)
+        cookieService.getAuthToken(request)
                 .ifPresent(token -> processToken(token, request));
         proceedFilterChain(request, response, filterChain);
     }
 
     private void processToken(String token, HttpServletRequest request) {
-        Optional.ofNullable(token)
-                .filter(tokenBlacklist::isNotBlacklisted)
-                .map(jwtService::extractUsername)
-                .filter(username -> isNotAuthenticated())
-                .map(userDetailsServiceImpl::loadUserByUsername)
-                .filter(userDetails -> jwtService.validateToken(token, userDetails))
-                .ifPresent(user -> authenticateUser(user, request));
+        try {
+            Optional.of(token)
+                    .filter(vaultInternalApi::isJwtNotBlacklisted)
+                    .map(accessTokenService::extractUsername)
+                    .filter(username -> isNotAuthenticated())
+                    .map(userDetailsServiceImpl::loadUserByUsername)
+                    .filter(userDetails -> accessTokenService.validateToken(token, userDetails))
+                    .ifPresent(user -> authenticateUser(user, request));
+        } catch (Exception e) {
+            logger.error("Error while processing access token" + token, e);
+            throw new JwtFilterException(e);
+        }
     }
 
     private void proceedFilterChain(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         try {
             filterChain.doFilter(request, response);
         } catch (IOException | ServletException e) {
-            logger.error("Error while processing request in " + this.getClass(), e);
-            throw new WebFilterException();
+            logger.error("Error while processing proceed access filtering in " + this.getClass(), e);
+            throw new JwtFilterException(e);
         }
     }
 

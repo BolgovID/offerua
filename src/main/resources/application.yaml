@@ -1,9 +1,10 @@
 spring:
-  redis:
-    host: localhost
-    port: 6379
   application:
     name: offerua
+  data:
+    elasticsearch:
+      cluster-nodes: localhost:9200
+      cluster-name: idx_question
   datasource:
     url: jdbc:postgresql://localhost:5433/offerua
     username: ${postgres-username}
@@ -15,23 +16,72 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  redis:
+    host: localhost
+    port: 6379
+  cache:
+    type: redis
+    redis:
+      time-to-live: 6000
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${mail-username}
+    password: ${mail-password}
+    properties:
+      mail:
+        smtp.auth: true
+        smtp.starttls.enable: true
+  rabbitmq:
+    host: localhost
+    virtual-host: ${rabbit-host}
+    username: ${rabbit-username}
+    password: ${rabbit-password}
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 3s
+          max-attempts: 6
+          max-interval: 30s
+          multiplier: 2.7
 
+server:
+  error:
+    include-message: always
 app:
   security:
-    jwt:
-      secret: ${jwt-secret}
-      issuer: http://localhost:8080
-      expiresIn: 60m
-    refresh:
-      expiresIn: 7d
+    tokens:
+      jwt:
+        secret: ${jwt-secret}
+        issuer: http://localhost:8080
+        expiresIn: 15m
+      refresh:
+        secret: ${refresh-secret}
+        expiresIn: 7d
+        issuer: http://localhost:8080
+      verification:
+        expiresIn: 1d
+      reset:
+        expiresIn: 1d
+  front-end:
+    base-url: http://localhost:4200
+    verificationPath: /auth/verify?data=
+    restorePath: /auth/restore?data=
+
 logging:
+  pattern:
+    config: config/logback.xml
   level:
-    org.springframework.data.r2dbc: DEBUG
+    tracer: TRACE
+    root: INFO
+    org.programming.pet.offerua: DEBUG
+    org.springframework.web: ERROR
     jdbc:
       audit: off
       sqlonly: off
       connection: off
-      sqltiming: info
+      sqltiming: off
       resultset: off
       resultsettable: off
 
@@ -47,3 +97,4 @@ log4jdbc:
   trim:
     sql:
       extrablanklines: false
+
