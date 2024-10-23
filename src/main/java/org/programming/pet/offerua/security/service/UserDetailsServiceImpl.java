@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.programming.pet.offerua.security.service.factory.UserDetailsFactory;
 import org.programming.pet.offerua.users.UsersInternalApi;
+import org.programming.pet.offerua.users.domain.exception.UserNotExistException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,18 +18,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserDetailsFactory userDetailsFactory;
-    private final UsersInternalApi usersApiClient;
+    private final UsersInternalApi usersInternalApi;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("Entering in loadUserByUsername Method...");
-        return usersApiClient.getUserAuthInfoByUsername(username)
-                .map(userDetailsFactory::create)
-                .orElseThrow(() -> {
-                            log.warn("Username not found: {}", username);
-                            return new UsernameNotFoundException("could not found userInfo..!!");
-                        }
-                );
+        try {
+            var userAuth = usersInternalApi.getUserAuthInfoByUsername(username);
+            return userDetailsFactory.create(userAuth);
+        } catch (UserNotExistException ex) {
+            log.warn("Username not found: {}", username);
+            throw new UsernameNotFoundException("could not found userInfo..!!");
+        }
     }
 
     public List<String> getUserAuthorityNames(String username) {

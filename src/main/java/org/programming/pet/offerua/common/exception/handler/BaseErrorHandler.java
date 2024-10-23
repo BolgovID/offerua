@@ -35,6 +35,7 @@ public class BaseErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiErrorResponse handleUnexpectedException(Exception ex, HttpServletRequest request) {
         log.warn("Unexpected internal server error: {}", ex.getMessage());
+        ex.printStackTrace();
         var message = prepareDetailMessageBasedOnRole(request, ex.getLocalizedMessage());
         return ErrorResponseUtils.mapToInternalErrorResponse(message);
     }
@@ -43,9 +44,10 @@ public class BaseErrorHandler {
             HttpServletRequest request,
             String exceptionMessage
     ) {
+
         return cookieService.getAuthToken(request)
                 .map(token -> JwtUtils.extractUserRole(token, accessTokenProperties.secret()))
-                .filter(role -> role.equals(UserRoleName.ADMIN.name()))
+                .filter(roleList -> roleList.contains(UserRoleName.ADMIN.name()))
                 .map(role -> exceptionMessage)
                 .orElse(DEFAULT_INTERNAL_ERROR_MESSAGE);
     }

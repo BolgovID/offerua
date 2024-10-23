@@ -4,7 +4,7 @@ spring:
   data:
     elasticsearch:
       cluster-nodes: localhost:9200
-      cluster-name: question-index
+      cluster-name: idx_question
   datasource:
     url: jdbc:postgresql://localhost:5433/offerua
     username: ${postgres-username}
@@ -43,7 +43,7 @@ spring:
           enabled: true
           initial-interval: 3s
           max-attempts: 6
-          max-interval: 20s
+          max-interval: 30s
           multiplier: 2.7
 
 server:
@@ -73,6 +73,7 @@ logging:
   pattern:
     config: config/logback.xml
   level:
+    tracer: TRACE
     root: INFO
     org.programming.pet.offerua: DEBUG
     org.springframework.web: ERROR
@@ -96,3 +97,4 @@ log4jdbc:
   trim:
     sql:
       extrablanklines: false
+

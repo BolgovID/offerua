@@ -1,0 +1,97 @@
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "suggest_analyzer": {
+          "type": "custom",
+          "tokenizer": "ngram_tokenizer",
+          "filter": [
+            "lowercase"
+          ]
+        },
+        "suggest_index": {
+          "type": "custom",
+          "tokenizer": "ngram_tokenizer",
+          "filter": [
+            "lowercase",
+            "stop_words"
+          ]
+        }
+      },
+      "filter": {
+        "stop_words": {
+          "type": "stop",
+          "stopwords": [
+            "&",
+            "AND",
+            "THE",
+            ",",
+            "'",
+            "WHY",
+            "WHICH",
+            "WHAT"
+          ]
+        }
+      },
+      "tokenizer": {
+        "ngram_tokenizer": {
+          "type": "edge_ngram",
+          "min_gram": 2,
+          "max_gram": 4,
+          "token_chars": [
+            "letter",
+            "digit"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "keyword"
+      },
+      "technology_id": {
+        "type": "keyword"
+      },
+      "technology_name": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "topic_id": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "topic_name": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "question_id": {
+        "type": "keyword"
+      },
+      "question": {
+        "type": "text"
+      },
+      "question_suggest": {
+        "type": "text",
+        "analyzer": "suggest_index",
+        "search_analyzer": "suggest_analyzer"
+      }
+    }
+  }
+}

@@ -1,9 +1,13 @@
 package org.programming.pet.offerua.search;
 
-import org.programming.pet.offerua.question.QuestionDto;
+import java.util.List;
 
 public interface SearchInternalApi {
-    QuestionSearchResultDto searchQuestion(String query);
+    QuestionSearchResponse findAllQuestions(SearchQuestionRequest searchQuestionRequest);
 
-    void indexQuestion(QuestionDto questionDto);
+    QuestionSearchResponse searchQuestions(SearchQuestionRequest searchQuestionRequest);
+
+    List<String> searchQuestionsAutocomplete(SearchQuestionRequest searchQuestionRequest);
+
+    List<QuestionTopicFacet> findQuestionFacets(SearchQuestionRequest searchQuestionRequest);
 }

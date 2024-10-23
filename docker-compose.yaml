@@ -2,14 +2,16 @@ version: '3.7'
 services:
   postgres-offerua:
     container_name: postgres-offerua
-    image: postgres:16
+    build:
+      context: ./postgres/
+      dockerfile: Dockerfile
     environment:
       POSTGRES_DB: offerua
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      PGDATA: /data/postgres
+      POSTGRES_PORT: 5432
     volumes:
-      - ./postgres-offerua:/data/postgres
+      - postgresvolume:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     restart: unless-stopped
@@ -30,13 +32,41 @@ services:
       - "15672:15672"
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.3
-    container_name: elasticsearch-container
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.3
     environment:
       - discovery.type=single-node
-      - cluster.name=product_index
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - cluster.name=idx_question
     ports:
       - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticvolume:/usr/share/elasticsearch/data
+
+  logstash:
+    container_name: logstash
+    build:
+      context: ./logstash/
+      dockerfile: Dockerfile
+    ports:
+      - "9600:9600"
+    environment:
+      - CONFIG_SUPPORT_ESCAPE=true
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+      - postgres-offerua
+    volumes:
+      - logstashvolume:/usr/share/logstash/data
+
+volumes:
+  postgresvolume:
+  elasticvolume:
+  logstashvolume:
+
 
 
 #  spring-app:

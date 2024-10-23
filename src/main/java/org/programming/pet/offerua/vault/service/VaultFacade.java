@@ -13,8 +13,7 @@ public class VaultFacade implements VaultInternalApi {
     private final RefreshTokenVaultService refreshTokenVaultService;
     private final JwtBlackListService jwtBlackListService;
     private final ResetTokenVaultService resetTokenVaultService;
-
-
+    
     @Override
     public void pushRefreshToken(String refreshToken) {
         refreshTokenVaultService.push(refreshToken);

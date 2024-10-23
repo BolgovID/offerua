@@ -45,6 +45,7 @@ public class SecurityConfig {
             "/api/v1/users/register",
             "/api/v1/users/reset-password",
             "/swagger-ui/index.html",
+            "/api/v1/**"
     };
 
     private static final String[] SWAGGER_AUTH_WHITELIST = {
@@ -57,10 +58,10 @@ public class SecurityConfig {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(unauthorizedHandler)
-                        .accessDeniedHandler(accessFailureHandler)
-                )
+//                .exceptionHandling(exception -> exception
+////                        .authenticationEntryPoint(unauthorizedHandler)
+//                        .accessDeniedHandler(accessFailureHandler)
+//                )
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(WHITE_LIST_API).permitAll()

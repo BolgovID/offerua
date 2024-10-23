@@ -2,8 +2,10 @@ package org.programming.pet.offerua.gateway;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.programming.pet.offerua.common.dto.PaginationRequest;
-import org.programming.pet.offerua.technologies.*;
+import org.programming.pet.offerua.technologies.TechnologiesExternalApi;
+import org.programming.pet.offerua.technologies.TechnologyDto;
+import org.programming.pet.offerua.technologies.TechnologyUpdateRequest;
+import org.programming.pet.offerua.technologies.TechnologyWithQuestionCountDto;
 import org.programming.pet.offerua.topic.TopicDto;
 import org.programming.pet.offerua.topic.TopicExternalApi;
 import org.programming.pet.offerua.topic.UpdateTopicRequest;
@@ -35,15 +37,6 @@ public class TechnologyController {
     @ResponseStatus(HttpStatus.OK)
     public TechnologyDto deleteTechnology(@PathVariable UUID techId) {
         return technologiesExternalApi.deleteTechnologies(techId);
-    }
-
-
-    @GetMapping("/{technologyName}/questions")
-    public TechnologyQuestionDto getTechnologyQuestion(
-            @PathVariable String technologyName,
-            PaginationRequest paginationRequest
-    ) {
-        return technologiesExternalApi.getAllTechnologyQuestions(technologyName, paginationRequest);
     }
 
     @PostMapping("/{techId}/topics")

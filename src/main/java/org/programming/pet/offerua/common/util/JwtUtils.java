@@ -4,13 +4,16 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 @UtilityClass
+@Slf4j
 public class JwtUtils {
 
     public Date calculateExpirationDate(Duration expireIn) {
@@ -48,8 +51,8 @@ public class JwtUtils {
         return claimsResolver.apply(claims);
     }
 
-    public static String extractUserRole(String token, String secret) {
-        return extractClaim(token, secret, claims -> claims.get("role", String.class));
+    public static List<String> extractUserRole(String token, String secret) {
+        return extractClaim(token, secret, claims -> claims.get("roles", List.class));
     }
 
     private Claims extractAllClaims(String token, String secret) {
