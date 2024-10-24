@@ -2,7 +2,6 @@ package org.programming.pet.offerua.question.infrastructure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.programming.pet.offerua.common.dto.CacheConstants;
 import org.programming.pet.offerua.question.QuestionDto;
 import org.programming.pet.offerua.question.QuestionUpdateRequest;
 import org.programming.pet.offerua.question.QuestionsExternalApi;
@@ -20,10 +19,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
-@Service
+import static org.programming.pet.offerua.common.dto.CacheConstants.QUESTIONS;
+
 @Slf4j
+@Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = CacheConstants.QUESTIONS)
+@CacheConfig(cacheNames = QUESTIONS)
 public class QuestionsFacade implements QuestionsExternalApi, QuestionsInternalApi {
     private final QuestionsCommandService commandService;
     private final QuestionsQueryService queryService;

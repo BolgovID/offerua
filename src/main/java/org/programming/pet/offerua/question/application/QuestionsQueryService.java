@@ -43,7 +43,8 @@ public class QuestionsQueryService {
         return searchInternalApi.findAllQuestions(searchDto);
     }
 
-    public QuestionSearchResponse searchQuestions(String text, int size, UUID searchAfterId, List<String> topicFilter, String technologyName) {
+    public QuestionSearchResponse searchQuestions(String text, int size, UUID searchAfterId,
+                                                  List<String> topicFilter, String technologyName) {
         var searchDto = SearchQuestionRequest.builder()
                 .text(StringUtils.hasText(text) ? text : "")
                 .size(size)
