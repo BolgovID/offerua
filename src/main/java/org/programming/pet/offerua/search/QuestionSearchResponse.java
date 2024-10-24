@@ -7,6 +7,6 @@ import java.util.List;
 
 public record QuestionSearchResponse(
         PageResponse<QuestionDto> questions,
-        List<QuestionTopicFacet> topicDtos
+        List<QuestionTopicFacet> topics
 ) {
 }

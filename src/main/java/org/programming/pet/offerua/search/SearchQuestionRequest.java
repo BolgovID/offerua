@@ -4,10 +4,12 @@ import co.elastic.clients.elasticsearch._types.FieldValue;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import org.hibernate.validator.constraints.Range;
-import org.programming.pet.offerua.search.application.util.ESQuestionConstants;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+
+import static org.programming.pet.offerua.search.application.util.ESQuestionConstants.TECHNOLOGY_NAME_KEYWORD;
+import static org.programming.pet.offerua.search.application.util.ESQuestionConstants.TOPIC_NAME_KEYWORD;
 
 @Builder
 public record SearchQuestionRequest(
@@ -35,10 +37,10 @@ public record SearchQuestionRequest(
     public Map<String, List<FieldValue>> filters() {
         var filterMap = new HashMap<String, List<FieldValue>>();
         if (!CollectionUtils.isEmpty(topicFilter)) {
-            filterMap.put(ESQuestionConstants.TOPIC_NAME_KEYWORD, topicFilter.stream().map(FieldValue::of).toList());
+            filterMap.put(TOPIC_NAME_KEYWORD, topicFilter.stream().map(FieldValue::of).toList());
         }
         if (Objects.nonNull(technologyName)) {
-            filterMap.put(ESQuestionConstants.TECHNOLOGY_NAME_KEYWORD, getTechnologyNameFilter());
+            filterMap.put(TECHNOLOGY_NAME_KEYWORD, getTechnologyNameFilter());
         }
         return filterMap;
     }

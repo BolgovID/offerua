@@ -13,6 +13,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SearchFacade implements SearchInternalApi {
+
     private final SearchQuestionQueryService queryService;
 
     @Override
