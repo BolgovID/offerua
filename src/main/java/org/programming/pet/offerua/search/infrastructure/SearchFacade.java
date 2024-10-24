@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.programming.pet.offerua.search.QuestionSearchResponse;
 import org.programming.pet.offerua.search.QuestionTopicFacet;
 import org.programming.pet.offerua.search.SearchInternalApi;
-import org.programming.pet.offerua.search.application.SearchQuestionQueryService;
 import org.programming.pet.offerua.search.SearchQuestionRequest;
+import org.programming.pet.offerua.search.application.SearchQuestionQueryService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
